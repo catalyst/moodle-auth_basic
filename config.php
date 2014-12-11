@@ -1,0 +1,9 @@
+<!-- No config needed -->
+
+<table cellspacing="0" cellpadding="5" border="0">
+<?php
+
+print_auth_lock_options($this->authtype, $user_fields, get_string('auth_fieldlocks_help', 'auth'), false, false);
+
+?>
+</table>
