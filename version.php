@@ -18,7 +18,7 @@
  * Version information
  *
  * @package    auth_basic
- * @copyright  Brendan Heyood <brendan@catalyst-au.net>
+ * @copyright  Brendan Heywood <brendan@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

@@ -17,7 +17,7 @@
  * Authenticate using valid basic auth http headers on internal accounts
  *
  * @package   auth_basic
- * @copyright Brendan Heyood <brendan@catalyst-au.net>
+ * @copyright Brendan Heywood <brendan@catalyst-au.net>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -27,7 +27,7 @@ require_once($CFG->libdir.'/authlib.php');
 /**
  * Plugin for basic authentication.
  *
- * @copyright  Brendan Heyood <brendan@catalyst-au.net>
+ * @copyright  Brendan Heywood <brendan@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class auth_plugin_basic extends auth_plugin_base {
