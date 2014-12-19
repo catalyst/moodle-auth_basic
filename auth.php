@@ -35,7 +35,7 @@ class auth_plugin_basic extends auth_plugin_base {
     /**
      * Constructor.
      */
-    function auth_plugin_basic() {
+    public function __construct() {
         $this->authtype = 'basic';
         $this->config = get_config('auth_basic');
     }
@@ -43,15 +43,17 @@ class auth_plugin_basic extends auth_plugin_base {
     /**
      * All the checking happens before the login page in this hook
      */
-    function loginpage_hook() {
+    public function loginpage_hook() {
 
-	    global $CFG, $DB, $USER, $SESSION;
+        global $CFG, $DB, $USER, $SESSION;
 
         if ( isset($_SERVER['PHP_AUTH_USER']) &&
              isset($_SERVER['PHP_AUTH_PW']) ) {
-            if ($user = $DB->get_record('user', array('username'=>$_SERVER['PHP_AUTH_USER'], 'mnethostid'=>$CFG->mnet_localhost_id))) {
+            if ($user = $DB->get_record('user', array(
+                    'username' => $_SERVER['PHP_AUTH_USER'],
+                    'mnethostid' => $CFG->mnet_localhost_id)) ) {
                 $pass = $_SERVER['PHP_AUTH_PW'];
-                if ( validate_internal_user_password($user, $pass) ){
+                if ( validate_internal_user_password($user, $pass) ) {
 
                     $USER = complete_user_login($user);
 
@@ -71,8 +73,8 @@ class auth_plugin_basic extends auth_plugin_base {
                 }
             }
         }
-        // No Basic auth credentials in headers
-        if ( $this->config->send401 == '1'){
+        // No Basic auth credentials in headers.
+        if ( $this->config->send401 == '1') {
 
             global $SITE;
             $realm = $SITE->shortname;
@@ -91,8 +93,7 @@ class auth_plugin_basic extends auth_plugin_base {
      * @param string $password The password
      * @return bool Authentication success or failure.
      */
-    function user_login ($username, $password) {
-        // Never gets this far
+    public function user_login ($username, $password) {
         return false;
     }
 
@@ -104,10 +105,10 @@ class auth_plugin_basic extends auth_plugin_base {
      *
      * @param object $config
      * @param object $err
-     * @param array $user_fields
+     * @param array $userfields
      */
-    function config_form($config, $err, $user_fields) {
-        include "config.php";
+    public function config_form($config, $err, $userfields) {
+        include("config.php");
     }
 
     /**
@@ -115,7 +116,7 @@ class auth_plugin_basic extends auth_plugin_base {
      *
      * @param object $config
      */
-    function process_config($config) {
+    public function process_config($config) {
         if (!isset($config->send401)) {
              $config->send401 = false;
         }
