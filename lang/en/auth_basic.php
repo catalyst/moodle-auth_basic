@@ -15,9 +15,16 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Anobody can login using basic auth http headers
+ *
  * @package   auth_basic
+ * @copyright Brendan Heyood <brendan@catalyst-au.net>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['auth_basicdescription'] = 'Users can sign in via basic auth. Very practical for dev testing, but relies on https for security.';
+$string['auth_basicdescription'] = 'Users can sign in via HTTP Basic authentication';
 $string['pluginname'] = 'Basic authentication';
+$string['send401'] = 'Force Basic for everyone';
+$string['send401_help'] = 'If Yes then all users will be prompted with the basic auth dialog and the normal login page will be disabled. In most cases you won\'t want this.';
+$string['send401_cancel'] = 'You need to enter a valid username and password';
+

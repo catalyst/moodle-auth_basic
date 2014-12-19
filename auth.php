@@ -13,31 +13,43 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
 /**
- * Anobody can login using basic auth http headers
+ * Authenticate using valid basic auth http headers on internal accounts
  *
- * @package auth_basic
- * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
+ * @package   auth_basic
+ * @copyright Brendan Heyood <brendan@catalyst-au.net>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 require_once($CFG->libdir.'/authlib.php');
 
+/**
+ * Plugin for basic authentication.
+ *
+ * @copyright  Brendan Heyood <brendan@catalyst-au.net>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class auth_plugin_basic extends auth_plugin_base {
 
+    /**
+     * Constructor.
+     */
     function auth_plugin_basic() {
         $this->authtype = 'basic';
-        $this->config = get_config('auth/basic');
+        $this->config = get_config('auth_basic');
     }
 
+    /**
+     * All the checking happens before the login page in this hook
+     */
     function loginpage_hook() {
 
 	    global $CFG, $DB, $USER, $SESSION;
 
         if ( isset($_SERVER['PHP_AUTH_USER']) &&
              isset($_SERVER['PHP_AUTH_PW']) ) {
-            if ($user = $DB->get_record('user', array('username'=>$_SERVER['PHP_AUTH_USER'], 'mnethostid'=>$CFG->mnet_localhost_id))){
+            if ($user = $DB->get_record('user', array('username'=>$_SERVER['PHP_AUTH_USER'], 'mnethostid'=>$CFG->mnet_localhost_id))) {
                 $pass = $_SERVER['PHP_AUTH_PW'];
                 if ( validate_internal_user_password($user, $pass) ){
 
@@ -55,36 +67,61 @@ class auth_plugin_basic extends auth_plugin_base {
                     $USER->site = $CFG->wwwroot;
                     set_moodle_cookie($USER->username);
                     redirect($urltogo);
+                    exit;
                 }
             }
         }
+        // No Basic auth credentials in headers
+        if ( $this->config->send401 == '1'){
+
+            global $SITE;
+            $realm = $SITE->shortname;
+            header('WWW-Authenticate: Basic realm="'.$realm.'"');
+            header('HTTP/1.0 401 Unauthorized');
+            print print_string('send401_cancel', 'auth_basic');
+            exit;
+        }
     }
 
+    /**
+     * Returns false regardless of the username and password as we never get
+     * to the web form. If we do, some other auth plugin will handle it
+     *
+     * @param string $username The username
+     * @param string $password The password
+     * @return bool Authentication success or failure.
+     */
     function user_login ($username, $password) {
         // Never gets this far
         return false;
     }
 
-    function prevent_local_passwords() {
-        return false;
-    }
-
-    function is_internal() {
-        return true;
-    }
-
-    function can_be_manually_set() {
-        return true;
-    }
-
+    /**
+     * Prints a form for configuring this authentication plugin.
+     *
+     * This function is called from admin/auth.php, and outputs a full page with
+     * a form for configuring this plugin.
+     *
+     * @param object $config
+     * @param object $err
+     * @param array $user_fields
+     */
     function config_form($config, $err, $user_fields) {
         include "config.php";
     }
 
+    /**
+     * Processes and stores configuration data for this authentication plugin.
+     *
+     * @param object $config
+     */
     function process_config($config) {
+        if (!isset($config->send401)) {
+             $config->send401 = false;
+        }
+        set_config('send401', $config->send401, 'auth_basic');
         return true;
     }
 
 }
-
 

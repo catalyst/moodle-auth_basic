@@ -18,12 +18,13 @@
  * Version information
  *
  * @package    auth_basic
+ * @copyright  Brendan Heyood <brendan@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2014121100;        // The current plugin version (Date: YYYYMMDDXX)
+$plugin->version   = 2014121900;        // The current plugin version (Date: YYYYMMDDXX)
 $plugin->release   = 2014121100;
 $plugin->requires  = 2014050800;        // Requires this Moodle version
 $plugin->component = 'auth_basic';       // Full name of the plugin (used for diagnostics)
