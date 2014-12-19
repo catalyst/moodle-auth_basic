@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version information
+ * Admin config settings page
  *
  * @package    auth_basic
  * @copyright  Brendan Heyood <brendan@catalyst-au.net>
@@ -31,7 +31,7 @@ $yesno = array(get_string('no'), get_string('yes'));
 <table cellspacing="0" cellpadding="5" border="0">
 <tr valign="top">
     <td align="right">
-        <label for="start_tls"><?php print_string('send401', 'auth_basic') ?></label>
+        <label for="send401"><?php print_string('send401', 'auth_basic') ?></label>
     </td>
     <td>
         <?php echo html_writer::select($yesno, 'send401', $config->send401, false); ?>
