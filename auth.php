@@ -62,7 +62,7 @@ class auth_plugin_basic extends auth_plugin_base {
                     } else if (isset($_GET['wantsurl'])) {
                         $urltogo = $_GET['wantsurl'];
                     } else {
-                        $urltogo = '/';
+                        $urltogo = $CFG->wwwroot;
                     }
 
                     $USER->loggedin = true;
