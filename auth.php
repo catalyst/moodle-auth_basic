@@ -53,7 +53,8 @@ class auth_plugin_basic extends auth_plugin_base {
                     'username' => $_SERVER['PHP_AUTH_USER'],
                     'mnethostid' => $CFG->mnet_localhost_id)) ) {
                 $pass = $_SERVER['PHP_AUTH_PW'];
-                if ( validate_internal_user_password($user, $pass) ) {
+                if ( ($user->auth == 'basic' || $this->config->onlybasic == '0') &&
+                     ( validate_internal_user_password($user, $pass) ) ) {
 
                     $USER = complete_user_login($user);
 
@@ -121,6 +122,11 @@ class auth_plugin_basic extends auth_plugin_base {
              $config->send401 = false;
         }
         set_config('send401', $config->send401, 'auth_basic');
+
+        if (!isset($config->onlybasic)) {
+             $config->onlybasic = true;
+        }
+        set_config('onlybasic', $config->onlybasic, 'auth_basic');
         return true;
     }
 

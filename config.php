@@ -25,6 +25,9 @@
 if (!isset($config->send401)) {
     $config->send401 = false;
 }
+if (!isset($config->onlybasic)) {
+    $config->onlybasic = true;
+}
 $yesno = array(get_string('no'), get_string('yes'));
 
 ?>
@@ -38,6 +41,17 @@ $yesno = array(get_string('no'), get_string('yes'));
     </td>
     <td>
         <?php print_string('send401_help', 'auth_basic') ?>
+    </td>
+</tr>
+<tr valign="top">
+    <td align="right">
+        <label for="onlybasic"><?php print_string('onlybasic', 'auth_basic') ?></label>
+    </td>
+    <td>
+        <?php echo html_writer::select($yesno, 'onlybasic', $config->onlybasic, false); ?>
+    </td>
+    <td>
+        <?php print_string('onlybasic_help', 'auth_basic') ?>
     </td>
 </tr>
 </table>
