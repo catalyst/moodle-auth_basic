@@ -7,14 +7,14 @@ This is more for dev purposes and allows easier testing with tools such as webpa
 
 Even in production this has value for use cases such as performance regression testing using a real user and a real page which does a full bootstrap.
 
-Unlike the core 'no authentication' plugin, this still requires real users and does proper password checks. It does ignore the auth type against the account, eg manual, ldap, smtp so can be used side by side with other auth plugins, as long as those plugins store or cache the password, ie prevent_local_passwords() returns false for those plugins. So it can only be used with existing accounts and doesn't create accounts.
+Unlike the core 'no authentication' plugin, this still requires real users and does proper password checks. It can be set to ignore the auth type against the account, eg manual, ldap, smtp so can be used side by side with other auth plugins, as long as those plugins store or cache the password, ie prevent_local_passwords() returns false for those plugins. So it can only be used with existing accounts and doesn't create accounts.
 
 From a security perspective this auth plugin is exactly as secure as the manual auth plugin, so this should only be used in conjuntion with https.
 
 Logging out
 -----------
 
-Note many browsers cache credentials that have work for ever, so you may logout, then click login and find yourself immediately logged back in without being prompted. As a general rule only services will use basic auth, not humans in browsers.
+Note that most browsers store basic auth credentials that have worked forever, so you may try to logout, then click somewhere else and find yourself immediately logged back in without being prompted. As a general rule only services will use basic auth, not humans in browsers.
 
 Curl example
 ------------
