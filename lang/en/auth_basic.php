@@ -26,7 +26,9 @@ $string['auth_basicdescription'] = 'Users can sign in via HTTP Basic authenticat
 $string['pluginname'] = 'Basic authentication';
 $string['send401'] = 'Force Basic for everyone';
 $string['send401_help'] = 'If Yes then all users will be prompted with the basic auth dialog and the normal login page will be disabled. In most cases you won\'t want this.';
-$string['onlybasic'] = '';
+$string['onlybasic'] = 'Only basic';
 $string['onlybasic_help'] = 'If Yes then only users whose auth type has been explicitly set to \'basic\' will work. For additional security.';
+$string['debug'] = 'Debug mode';
+$string['debug_help'] = 'Dump details of auth process to error log';
 $string['send401_cancel'] = 'You need to enter a valid username and password';
 

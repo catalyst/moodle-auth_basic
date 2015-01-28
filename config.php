@@ -28,6 +28,9 @@ if (!isset($config->send401)) {
 if (!isset($config->onlybasic)) {
     $config->onlybasic = true;
 }
+if (!isset($config->debug)) {
+    $config->debug = false;
+}
 $yesno = array(get_string('no'), get_string('yes'));
 
 ?>
@@ -52,6 +55,17 @@ $yesno = array(get_string('no'), get_string('yes'));
     </td>
     <td>
         <?php print_string('onlybasic_help', 'auth_basic') ?>
+    </td>
+</tr>
+<tr valign="top">
+    <td align="right">
+        <label for="debug"><?php print_string('debug', 'auth_basic') ?></label>
+    </td>
+    <td>
+        <?php echo html_writer::select($yesno, 'debug', $config->debug, false); ?>
+    </td>
+    <td>
+        <?php print_string('debug_help', 'auth_basic') ?>
     </td>
 </tr>
 </table>

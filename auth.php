@@ -47,16 +47,27 @@ class auth_plugin_basic extends auth_plugin_base {
 
         global $CFG, $DB, $USER, $SESSION;
 
+        if ($this->config->debug){
+            error_log('Basic: auth login page hook');
+        }
+
         if ( isset($_SERVER['PHP_AUTH_USER']) &&
              isset($_SERVER['PHP_AUTH_PW']) ) {
-            if ($user = $DB->get_record('user', array(
-                    'username' => $_SERVER['PHP_AUTH_USER'],
-                    'mnethostid' => $CFG->mnet_localhost_id)) ) {
+            if ($this->config->debug){
+                error_log('Basic: found credentials');
+            }
+            if ($user = $DB->get_record('user', array( 'username' => $_SERVER['PHP_AUTH_USER'] ) ) ) {
+                if ($this->config->debug){
+                    error_log('Basic: found valid user');
+                }
                 $pass = $_SERVER['PHP_AUTH_PW'];
                 if ( ($user->auth == 'basic' || $this->config->onlybasic == '0') &&
                      ( validate_internal_user_password($user, $pass) ) ) {
 
                     $USER = complete_user_login($user);
+                    if ($this->config->debug){
+                        error_log('Basic: successful authentication');
+                    }
 
                     if (isset($SESSION->wantsurl) && !empty($SESSION->wantsurl)) {
                         $urltogo = $SESSION->wantsurl;
@@ -71,6 +82,14 @@ class auth_plugin_basic extends auth_plugin_base {
                     set_moodle_cookie($USER->username);
                     redirect($urltogo);
                     exit;
+                } else {
+                    if ($this->config->debug){
+                        error_log('Basic: failed auth');
+                    }
+                }
+            } else{
+                if ($this->config->debug){
+                    error_log("Basic: invalid user: '{$_SERVER['PHP_AUTH_USER']}'");
                 }
             }
         }
@@ -127,6 +146,11 @@ class auth_plugin_basic extends auth_plugin_base {
              $config->onlybasic = true;
         }
         set_config('onlybasic', $config->onlybasic, 'auth_basic');
+
+        if (!isset($config->debug)) {
+             $config->debug = false;
+        }
+        set_config('debug', $config->debug, 'auth_basic');
         return true;
     }
 
