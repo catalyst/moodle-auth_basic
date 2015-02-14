@@ -43,6 +43,19 @@ class auth_plugin_basic extends auth_plugin_base {
     /**
      * All the checking happens before the login page in this hook
      */
+    public function pre_loginpage_hook() {
+
+        if ($this->config->debug){
+            error_log('Basic: pre auth login page hook');
+        }
+
+        $this->loginpage_hook();
+
+    }
+
+    /**
+     * All the checking happens before the login page in this hook
+     */
     public function loginpage_hook() {
 
         global $CFG, $DB, $USER, $SESSION;
@@ -80,8 +93,19 @@ class auth_plugin_basic extends auth_plugin_base {
                     $USER->loggedin = true;
                     $USER->site = $CFG->wwwroot;
                     set_moodle_cookie($USER->username);
-                    redirect($urltogo);
-                    exit;
+
+                    // If we are not on the page we want, then redirect to it
+                    if( qualified_me() !== $urltogo ) {
+                        if ($this->config->debug){
+                            error_log("Basic: redirecting to $urltogo");
+                        }
+                        redirect($urltogo);
+                        exit;
+                    } else {
+                        if ($this->config->debug){
+                            error_log("Basic: Continuing onto " . qualified_me() );
+                        }
+                    }
                 } else {
                     if ($this->config->debug){
                         error_log('Basic: failed auth');
