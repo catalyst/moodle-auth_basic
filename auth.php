@@ -38,6 +38,9 @@ class auth_plugin_basic extends auth_plugin_base {
     public function __construct() {
         $this->authtype = 'basic';
         $this->config = get_config('auth_basic');
+        if (!property_exists($this->config, 'debug')) {
+            $this->config->debug = true;
+        }
     }
 
     /**
