@@ -48,8 +48,8 @@ class auth_plugin_basic extends auth_plugin_base {
      * response headers for easy curl based debugging
      *
      */
-    function log($msg){
-        if ($this->config->debug){
+    private function log($msg) {
+        if ($this->config->debug) {
             error_log('auth_basic: ' . $msg);
             header ("X-auth_basic: $msg", false);
         }
@@ -100,8 +100,8 @@ class auth_plugin_basic extends auth_plugin_base {
                     $USER->site = $CFG->wwwroot;
                     set_moodle_cookie($USER->username);
 
-                    // If we are not on the page we want, then redirect to it
-                    if( qualified_me() !== $urltogo ) {
+                    // If we are not on the page we want, then redirect to it.
+                    if ( qualified_me() !== $urltogo ) {
                         $this->log(__FUNCTION__ . " redirecting to $urltogo");
                         redirect($urltogo);
                         exit;
@@ -111,7 +111,7 @@ class auth_plugin_basic extends auth_plugin_base {
                 } else {
                     $this->log(__FUNCTION__ . ' password bad');
                 }
-            } else{
+            } else {
                 $this->log(__FUNCTION__ . " invalid user: '{$_SERVER['PHP_AUTH_USER']}'");
             }
         }
