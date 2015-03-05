@@ -44,16 +44,25 @@ class auth_plugin_basic extends auth_plugin_base {
     }
 
     /**
+     * A debug function, dumps to the php log as well as into the
+     * response headers for easy curl based debugging
+     *
+     */
+    function log($msg){
+        if ($this->config->debug){
+            error_log('auth_basic: ' . $msg);
+            header ("X-auth_basic: $msg", false);
+        }
+    }
+
+    /**
      * All the checking happens before the login page in this hook
      */
     public function pre_loginpage_hook() {
 
-        if ($this->config->debug){
-            error_log('Basic: pre auth login page hook');
-        }
-
+        $this->log(__FUNCTION__ . ' enter');
         $this->loginpage_hook();
-
+        $this->log(__FUNCTION__ . ' exit');
     }
 
     /**
@@ -63,27 +72,21 @@ class auth_plugin_basic extends auth_plugin_base {
 
         global $CFG, $DB, $USER, $SESSION;
 
-        if ($this->config->debug){
-            error_log('Basic: auth login page hook');
-        }
+        $this->log(__FUNCTION__);
 
         if ( isset($_SERVER['PHP_AUTH_USER']) &&
              isset($_SERVER['PHP_AUTH_PW']) ) {
-            if ($this->config->debug){
-                error_log('Basic: found credentials');
-            }
+            $this->log(__FUNCTION__ . ' has credentials');
             if ($user = $DB->get_record('user', array( 'username' => $_SERVER['PHP_AUTH_USER'] ) ) ) {
-                if ($this->config->debug){
-                    error_log('Basic: found valid user');
-                }
+
+                $this->log(__FUNCTION__ . ' found user '.$user->username);
                 $pass = $_SERVER['PHP_AUTH_PW'];
+
                 if ( ($user->auth == 'basic' || $this->config->onlybasic == '0') &&
                      ( validate_internal_user_password($user, $pass) ) ) {
 
+                    $this->log(__FUNCTION__ . ' password good');
                     $USER = complete_user_login($user);
-                    if ($this->config->debug){
-                        error_log('Basic: successful authentication');
-                    }
 
                     if (isset($SESSION->wantsurl) && !empty($SESSION->wantsurl)) {
                         $urltogo = $SESSION->wantsurl;
@@ -99,32 +102,26 @@ class auth_plugin_basic extends auth_plugin_base {
 
                     // If we are not on the page we want, then redirect to it
                     if( qualified_me() !== $urltogo ) {
-                        if ($this->config->debug){
-                            error_log("Basic: redirecting to $urltogo");
-                        }
+                        $this->log(__FUNCTION__ . " redirecting to $urltogo");
                         redirect($urltogo);
                         exit;
                     } else {
-                        if ($this->config->debug){
-                            error_log("Basic: Continuing onto " . qualified_me() );
-                        }
+                        $this->log(__FUNCTION__ . " continuing onto " . qualified_me() );
                     }
                 } else {
-                    if ($this->config->debug){
-                        error_log('Basic: failed auth');
-                    }
+                    $this->log(__FUNCTION__ . ' password bad');
                 }
             } else{
-                if ($this->config->debug){
-                    error_log("Basic: invalid user: '{$_SERVER['PHP_AUTH_USER']}'");
-                }
+                $this->log(__FUNCTION__ . " invalid user: '{$_SERVER['PHP_AUTH_USER']}'");
             }
         }
+
         // No Basic auth credentials in headers.
         if ( $this->config->send401 == '1') {
 
             global $SITE;
             $realm = $SITE->shortname;
+            $this->log(__FUNCTION__ . ' prompting for password');
             header('WWW-Authenticate: Basic realm="'.$realm.'"');
             header('HTTP/1.0 401 Unauthorized');
             print print_string('send401_cancel', 'auth_basic');
