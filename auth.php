@@ -32,15 +32,18 @@ require_once($CFG->libdir.'/authlib.php');
  */
 class auth_plugin_basic extends auth_plugin_base {
 
+    public $defaults = array(
+        'debug'     => 0,
+        'send401'   => 0,
+        'onlybasic' => 1,
+    );
+
     /**
      * Constructor.
      */
     public function __construct() {
         $this->authtype = 'basic';
-        $this->config = get_config('auth_basic');
-        if (!property_exists($this->config, 'debug')) {
-            $this->config->debug = true;
-        }
+        $this->config = (object) array_merge($this->defaults, (array) get_config('auth_basic') );
     }
 
     /**
@@ -161,20 +164,9 @@ class auth_plugin_basic extends auth_plugin_base {
      * @param object $config
      */
     public function process_config($config) {
-        if (!isset($config->send401)) {
-             $config->send401 = false;
-        }
-        set_config('send401', $config->send401, 'auth_basic');
-
-        if (!isset($config->onlybasic)) {
-             $config->onlybasic = true;
-        }
+        set_config('send401',   $config->send401,   'auth_basic');
         set_config('onlybasic', $config->onlybasic, 'auth_basic');
-
-        if (!isset($config->debug)) {
-             $config->debug = false;
-        }
-        set_config('debug', $config->debug, 'auth_basic');
+        set_config('debug',     $config->debug,     'auth_basic');
         return true;
     }
 

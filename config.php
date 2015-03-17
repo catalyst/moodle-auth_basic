@@ -22,15 +22,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-if (!isset($config->send401)) {
-    $config->send401 = false;
-}
-if (!isset($config->onlybasic)) {
-    $config->onlybasic = true;
-}
-if (!isset($config->debug)) {
-    $config->debug = false;
-}
 $yesno = array(get_string('no'), get_string('yes'));
 
 ?>
