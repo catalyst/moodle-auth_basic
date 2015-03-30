@@ -89,7 +89,7 @@ class auth_plugin_basic extends auth_plugin_base {
                      ( validate_internal_user_password($user, $pass) ) ) {
 
                     $this->log(__FUNCTION__ . ' password good');
-                    $USER = complete_user_login($user);
+                    complete_user_login($user);
 
                     if (isset($SESSION->wantsurl) && !empty($SESSION->wantsurl)) {
                         $urltogo = $SESSION->wantsurl;
