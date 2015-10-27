@@ -155,6 +155,7 @@ class auth_plugin_basic extends auth_plugin_base {
      * @param array $userfields
      */
     public function config_form($config, $err, $userfields) {
+        $config = (object) array_merge($this->defaults, (array) $config );
         include("config.php");
     }
 
