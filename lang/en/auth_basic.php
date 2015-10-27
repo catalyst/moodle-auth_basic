@@ -29,6 +29,6 @@ $string['send401_help'] = 'If Yes then all users will be prompted with the basic
 $string['onlybasic'] = 'Only basic';
 $string['onlybasic_help'] = 'If Yes then only users whose auth type has been explicitly set to \'basic\' will work. For additional security.';
 $string['debug'] = 'Debug mode';
-$string['debug_help'] = 'Dump details of auth process to error log';
+$string['debug_help'] = 'Dump details of auth process to error log and http headers';
 $string['send401_cancel'] = 'You need to enter a valid username and password';
 
