@@ -107,7 +107,6 @@ class auth_plugin_basic extends auth_plugin_base {
                     if ( qualified_me() !== $urltogo ) {
                         $this->log(__FUNCTION__ . " redirecting to $urltogo");
                         redirect($urltogo);
-                        exit;
                     } else {
                         $this->log(__FUNCTION__ . " continuing onto " . qualified_me() );
                     }
@@ -139,6 +138,8 @@ class auth_plugin_basic extends auth_plugin_base {
      * @param string $username The username
      * @param string $password The password
      * @return bool Authentication success or failure.
+     *
+     * @SuppressWarnings("unused")
      */
     public function user_login ($username, $password) {
         return false;
@@ -153,6 +154,8 @@ class auth_plugin_basic extends auth_plugin_base {
      * @param object $config
      * @param object $err
      * @param array $userfields
+     *
+     * @SuppressWarnings("unused")
      */
     public function config_form($config, $err, $userfields) {
         $config = (object) array_merge($this->defaults, (array) $config );
