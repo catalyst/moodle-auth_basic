@@ -1,3 +1,7 @@
+<a href="https://travis-ci.org/brendanheywood/moodle-auth_basic">
+<img src="https://travis-ci.org/brendanheywood/moodle-auth_basic.svg?branch=master">
+</a>
+
 Moodle Basic auth plugin
 ========================
 
