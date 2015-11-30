@@ -165,9 +165,9 @@ class auth_plugin_basic extends auth_plugin_base {
      * @param object $config
      */
     public function process_config($config) {
-        set_config('send401',   $config->send401,   'auth_basic');
-        set_config('onlybasic', $config->onlybasic, 'auth_basic');
-        set_config('debug',     $config->debug,     'auth_basic');
+        foreach ($this->defaults as $key => $value) {
+            set_config($key, $config->$key, 'auth_saml2');
+        }
         return true;
     }
 
