@@ -53,7 +53,9 @@ class auth_plugin_basic extends auth_plugin_base {
      */
     private function log($msg) {
         if ($this->config->debug) {
+            // @codingStandardsIgnoreStart
             error_log('auth_basic: ' . $msg);
+            // @codingStandardsIgnoreEnd
             header ("X-auth_basic: $msg", false);
         }
     }
