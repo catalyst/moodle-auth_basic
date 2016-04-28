@@ -15,6 +15,14 @@ Unlike the core 'no authentication' plugin, this still requires real users and d
 
 From a security perspective this auth plugin is exactly as secure as the manual auth plugin, so this should only be used in conjuntion with https.
 
+Moodle plugin directory
+-----------------------
+
+This plugin is published in the moodle plugin directory for 1-click install:
+
+https://moodle.org/plugins/auth_basic
+
+
 Logging out
 -----------
 
@@ -32,3 +40,11 @@ Example usage on the command line:
  * -L follow redirects
  * --user credentials
 
+Feedback and issues
+-------------------
+
+Please raise any issues in github:
+
+https://github.com/brendanheywood/moodle-auth_basic/issues
+
+If you need anything urgently and would like to sponsor it's implemenation please email me: Brendan Heywood brendan@catalyst-au.net
