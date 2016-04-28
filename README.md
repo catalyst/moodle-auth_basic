@@ -1,5 +1,5 @@
-<a href="https://travis-ci.org/brendanheywood/moodle-auth_basic">
-<img src="https://travis-ci.org/brendanheywood/moodle-auth_basic.svg?branch=master">
+<a href="https://travis-ci.org/CatalystIT-AU/moodle-auth_basic">
+<img src="https://travis-ci.org/CatalystIT-AU/moodle-auth_basic.svg?branch=master">
 </a>
 
 Moodle Basic auth plugin
