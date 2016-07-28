@@ -171,7 +171,7 @@ class auth_plugin_basic extends auth_plugin_base {
      */
     public function process_config($config) {
         foreach ($this->defaults as $key => $value) {
-            set_config($key, $config->$key, 'auth_saml2');
+            set_config($key, $config->$key, 'auth_basic');
         }
         return true;
     }
