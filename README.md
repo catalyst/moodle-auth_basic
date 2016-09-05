@@ -2,12 +2,19 @@
 <img src="https://travis-ci.org/CatalystIT-AU/moodle-auth_basic.svg?branch=master">
 </a>
 
-Moodle Basic auth plugin
+* [What is this?](#what-is-this)
+* [Installation](#installation)
+* [Logging out](#logging-out)
+* [Feedback and issues](#feedback-and-issues)
+
+What is this?
 ========================
 
-Enable users to authenticate using basic auth.
+This is a moodle plugin which enables you to authenticate via HTTP basic auth.
 
-This is more for dev purposes and allows easier testing with tools such as webpage test, page speed, link checkers etc which often can use basic auth out of the box, and you don't want to need to customise to handle moodle specific authentication.
+This is more for development andbackend purposes and allows easier testing with tools such as webpage test, page speed, link checkers etc which often can use basic auth out of the box, but you don't want to attempt to customize them in order to handle moodle specific authentication or try to where Moodle API access is inappropriate.
+
+You would almost never want to use this for real human users as basic auth is a fairly terrible user expereince. It is designed to work side by side with your real moodle authentication but doesn't impact on normal authentication.
 
 Even in production this has value for use cases such as performance regression testing using a real user and a real page which does a full bootstrap.
 
@@ -15,12 +22,28 @@ Unlike the core 'no authentication' plugin, this still requires real users and d
 
 From a security perspective this auth plugin is exactly as secure as the manual auth plugin, so this should only be used in conjuntion with https.
 
-Moodle plugin directory
------------------------
+Installation
+------------
 
-This plugin is published in the moodle plugin directory for 1-click install:
+1. Install the plugin the same as any standard moodle plugin either via the
+Moodle plugin directory, or you can use git to clone it into your source:
 
-https://moodle.org/plugins/auth_basic
+     git clone git@github.com:CatalystIT-AU/moodle-auth_basic.git auth/basic
+
+    Or install via the Moodle plugin directory:
+    
+     https://moodle.org/plugins/auth_basic
+
+2. Then run the Moodle upgrade
+
+If you have issues please log them in github here:
+
+https://github.com/CatalystIT-AU/moodle-auth_basic/issues
+
+Or if you want paid support please contact Catalyst IT Australia:
+
+https://www.catalyst-au.net/contact-us
+
 
 
 Logging out
