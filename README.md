@@ -12,7 +12,7 @@ What is this?
 
 This is a moodle plugin which enables you to authenticate via HTTP basic auth.
 
-This is more for development andbackend purposes and allows easier testing with tools such as webpage test, page speed, link checkers etc which often can use basic auth out of the box, but you don't want to attempt to customize them in order to handle moodle specific authentication or try to where Moodle API access is inappropriate.
+This is more for development and backend purposes and allows easier testing with tools such as webpage test, page speed, link checkers etc which often can use basic auth out of the box, but you don't want to attempt to customize them in order to handle moodle specific authentication, or try to, where Moodle API access is inappropriate.
 
 You would almost never want to use this for real human users as basic auth is a fairly terrible user expereince. It is designed to work side by side with your real moodle authentication but doesn't impact on normal authentication.
 
@@ -28,7 +28,7 @@ Installation
 1. Install the plugin the same as any standard moodle plugin either via the
 Moodle plugin directory, or you can use git to clone it into your source:
 
-     git clone git@github.com:CatalystIT-AU/moodle-auth_basic.git auth/basic
+     git clone git@github.com:catalyst/moodle-auth_basic.git auth/basic
 
     Or install via the Moodle plugin directory:
     
