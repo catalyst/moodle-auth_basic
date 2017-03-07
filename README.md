@@ -38,7 +38,7 @@ Moodle plugin directory, or you can use git to clone it into your source:
 
 If you have issues please log them in github here:
 
-https://github.com/CatalystIT-AU/moodle-auth_basic/issues
+https://github.com/catalyst/moodle-auth_basic/issues
 
 Or if you want paid support please contact Catalyst IT Australia:
 
