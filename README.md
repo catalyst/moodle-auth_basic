@@ -68,6 +68,6 @@ Feedback and issues
 
 Please raise any issues in github:
 
-https://github.com/brendanheywood/moodle-auth_basic/issues
+https://github.com/catalyst/moodle-auth_basic/issues
 
 If you need anything urgently and would like to sponsor it's implemenation please email me: Brendan Heywood brendan@catalyst-au.net
