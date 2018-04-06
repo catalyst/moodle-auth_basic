@@ -15,18 +15,32 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version information
+ * Settings
  *
  * @package    auth_basic
- * @copyright  Brendan Heywood <brendan@catalyst-au.net>
+ * @copyright  Dimitrii Metelkin <dmitriim@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+defined('MOODLE_INTERNAL') || die;
 
-$plugin->version   = 2018040600;    // The current plugin version (Date: YYYYMMDDXX).
-$plugin->release   = 2018040600;    // Match release exactly to version.
-$plugin->requires  = 2014050800;    // Requires this Moodle version.
-$plugin->component = 'auth_basic';  // Full name of the plugin (used for diagnostics).
-$plugin->maturity  = MATURITY_STABLE;
+if ($ADMIN->fulltree) {
 
+    $yesno = array(get_string('no'), get_string('yes'));
+
+    $settings->add(new admin_setting_configselect('auth_basic/send401',
+        new lang_string('send401', 'auth_basic'),
+        new lang_string('send401_help', 'auth_basic'), 0, $yesno)
+    );
+
+    $settings->add(new admin_setting_configselect('auth_basic/onlybasic',
+            new lang_string('onlybasic', 'auth_basic'),
+            new lang_string('onlybasic_help', 'auth_basic'), 0, $yesno)
+    );
+
+    $settings->add(new admin_setting_configselect('auth_basic/debug',
+            new lang_string('debug', 'auth_basic'),
+            new lang_string('debug_help', 'auth_basic'), 0, $yesno)
+    );
+
+}
