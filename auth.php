@@ -147,34 +147,4 @@ class auth_plugin_basic extends auth_plugin_base {
         return false;
     }
 
-    /**
-     * Prints a form for configuring this authentication plugin.
-     *
-     * This function is called from admin/auth.php, and outputs a full page with
-     * a form for configuring this plugin.
-     *
-     * @param object $config
-     * @param object $err
-     * @param array $userfields
-     *
-     * @SuppressWarnings("unused")
-     */
-    public function config_form($config, $err, $userfields) {
-        $config = (object) array_merge($this->defaults, (array) $config );
-        include("config.php");
-    }
-
-    /**
-     * Processes and stores configuration data for this authentication plugin.
-     *
-     * @param object $config
-     */
-    public function process_config($config) {
-        foreach ($this->defaults as $key => $value) {
-            set_config($key, $config->$key, 'auth_basic');
-        }
-        return true;
-    }
-
 }
-
