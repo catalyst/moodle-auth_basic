@@ -32,3 +32,7 @@ $string['debug'] = 'Debug mode';
 $string['debug_help'] = 'Dump details of auth process to error log and http headers';
 $string['send401_cancel'] = 'You need to enter a valid username and password';
 
+/*
+ * Privacy provider (GDPR)
+ */
+$string["privacy:no_data_reason"] = "The 'auth basic' plugins doesn't store any personnel data.";
