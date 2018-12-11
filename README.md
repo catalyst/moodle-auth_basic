@@ -61,16 +61,20 @@ with 'masterpassword' is your Master Password.
 
 Template to use with curl:
 
-random-user: Select a random non-suspended user:
+* random-user: Select a random non-suspended user
+
 ```curl --user random-user:masterpassword http://my.moodle.local/course/view.php?id=123```
 
-random-role-{roleid}: Select a random non-suspended user with roleid at site level:
+* random-role-{roleid}: Select a random non-suspended user with roleid at site level
+
 ```curl --user random-role-1:masterpassword http://my.moodle.local/course/view.php?id=123```
 
-random-course-{courseid}: Select a random non-suspended user who is enroled in the course
+* random-course-{courseid}: Select a random non-suspended user who is enroled in the course
+
 ```curl --user random-course-10:masterpassword http://my.moodle.local/course/view.php?id=123```
 
-random-course-{courseid}-role-{roleid}: Select a random non-suspended user who is enroled in the course with roleid
+* random-course-{courseid}-role-{roleid}: Select a random non-suspended user who is enroled in the course with roleid
+
 ```curl --user random-course-10-role-1:masterpassword http://my.moodle.local/course/view.php?id=123```
 
 Logging out
