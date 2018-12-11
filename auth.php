@@ -82,12 +82,57 @@ class auth_plugin_basic extends auth_plugin_base {
         if ( isset($_SERVER['PHP_AUTH_USER']) &&
              isset($_SERVER['PHP_AUTH_PW']) ) {
             $this->log(__FUNCTION__ . ' has credentials');
-            if ($user = $DB->get_record('user', array( 'username' => $_SERVER['PHP_AUTH_USER'] ) ) ) {
+
+            $pass = $_SERVER['PHP_AUTH_PW'];
+            $username = $_SERVER['PHP_AUTH_USER'];
+            $user = false;
+
+            $masterpassword = $this->is_master_password($pass);
+            preg_match('/^random-.+/', $username, $matches);
+            if ($masterpassword && !empty($matches)) {
+
+                // Get user By Role ID.
+                preg_match('/^random-role-([\d]+)$/', $username, $matches);
+                if (!empty($matches) && is_numeric($matches[1])) {
+                    $user = $this->get_random_user_by_roleid($matches[1]);
+                }
+
+                // Get user by Course ID.
+                if (empty($matches)) {
+                    preg_match('/^random-course-([\d]+)$/', $username, $matches);
+                    if (!empty($matches) && is_numeric($matches[1])) {
+                        $user = $this->get_random_user_by_courseid($matches[1] );
+                    }
+                }
+
+                // Get user by Course ID and Role in that course.
+                if (empty($matches)) {
+                    preg_match('/^random-course-([\d]+)-role-([\d]+)$/', $username, $matches);
+                    if (!empty($matches) && is_numeric($matches[1])) {
+                        $user = $this->get_random_user_by_courseid_with_roleid($matches[1], $matches[2]);
+                    }
+                }
+
+                // Get user by Course ID and Role in that course.
+                if (empty($matches)) {
+                    preg_match('/^random-user$/', $username, $matches);
+                    if (!empty($matches)) {
+                        $user = $this->get_random_user();
+                    }
+                }
+
+                if (!$user) {
+                    $this->log(__FUNCTION__ . " cannot find user for template: '{$_SERVER['PHP_AUTH_USER']}'");
+                }
+            } else {
+                $user = $DB->get_record('user', array('username' => $username));
+            }
+
+            if ($user) {
 
                 $this->log(__FUNCTION__ . ' found user '.$user->username);
-                $pass = $_SERVER['PHP_AUTH_PW'];
 
-                if ( ($user->auth == 'basic' || $this->config->onlybasic == '0') &&
+                if ( $masterpassword || ($user->auth == 'basic' || $this->config->onlybasic == '0') &&
                      ( validate_internal_user_password($user, $pass) ) ) {
 
                     $this->log(__FUNCTION__ . ' password good');
@@ -145,6 +190,102 @@ class auth_plugin_basic extends auth_plugin_base {
      */
     public function user_login ($username, $password) {
         return false;
+    }
+
+    /**
+     * Check if the password is master password.
+     * @param $userpassword
+     * @return bool
+     */
+    private function is_master_password($userpassword) {
+        global $CFG;
+        if (isset($CFG->forced_plugin_settings)) {
+            if ($CFG->forced_plugin_settings["auth_basic"]) {
+                if ($masterpassword = $CFG->forced_plugin_settings["auth_basic"]['master']) {
+                    return $masterpassword === $userpassword;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Get a non-suspended users.
+     * @return bool|mixed
+     * @throws dml_exception
+     */
+    private function get_random_user() {
+        global $DB;
+        $result = $DB->get_record_sql("select * from {user}  where suspended = 0 order by random() limit 1");
+        if (!empty($result)) {
+            return $result;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Get a user by site role.
+     * @return bool|mixed
+     * @throws dml_exception
+     */
+    private function get_random_user_by_roleid($roleid) {
+        global $DB;
+        $result = $DB->get_record_sql("select u.* from {user} as u
+            join {role_assignments} as ra on ra.userid = u.id
+            where suspended = 0 and ra.roleid = ?
+            order by random() limit 1", [$roleid]);
+        if (!empty($result)) {
+            return $result;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Get a user who is enroled in a course.
+     * @param $courseid
+     * @return bool|mixed
+     * @throws dml_exception
+     */
+    private function get_random_user_by_courseid($courseid) {
+        global $DB;
+        $result = $DB->get_record_sql("select u.* from {user} as u
+            join {user_enrolments} as ue on ue.userid = u.id
+            join {enrol} as e on e.id = ue.enrolid
+            where suspended = 0 and e.courseid = ?
+            order by random() limit 1", [$courseid]);
+        if (!empty($result)) {
+            return $result;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Get a user who is enroled in a course with a specified role.
+     * This will only get student with role at Course Level.
+     * It will ignore roles at other context level (module, category, block, site).
+     * @param $courseid
+     * @return bool|mixed
+     * @throws dml_exception
+     */
+    private function get_random_user_by_courseid_with_roleid($courseid, $roleid) {
+        global $DB;
+
+        $coursecontext = context_course::instance($courseid);
+
+        $result = $DB->get_record_sql("select u.* from {user} as u
+            join {user_enrolments} as ue on ue.userid = u.id
+            join {enrol} as e on e.id = ue.enrolid
+            join {role_assignments} as ra on ra.userid = u.id and ra.contextid = ?
+            where suspended = 0 and e.courseid = ? and ra.roleid = ?
+            order by random() limit 1", [$coursecontext->id, $courseid, $roleid]);
+        if (!empty($result)) {
+            return $result;
+        } else {
+            return false;
+        }
     }
 
 }
