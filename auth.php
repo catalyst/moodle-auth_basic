@@ -218,7 +218,8 @@ class auth_plugin_basic extends auth_plugin_base {
      */
     private function get_random_user() {
         global $DB;
-        $result = $DB->get_record_sql("select * from {user}  where suspended = 0 order by random() limit 1");
+        $sql = "SELECT * FROM {user} WHERE suspended = 0 ORDER BY random() limit 1";
+        $result = $DB->get_record_sql($sql);
         if (!empty($result)) {
             return $result;
         } else {
@@ -233,10 +234,12 @@ class auth_plugin_basic extends auth_plugin_base {
      */
     private function get_random_user_by_roleid($roleid) {
         global $DB;
-        $result = $DB->get_record_sql("select u.* from {user} as u
-            join {role_assignments} as ra on ra.userid = u.id
-            where suspended = 0 and ra.roleid = ?
-            order by random() limit 1", [$roleid]);
+        $sql = "SELECT u.*
+                  FROM {user} u
+                  JOIN {role_assignments} ra ON ra.userid = u.id
+                 WHERE u.suspended = 0 AND ra.roleid = :roleid
+              ORDER BY random() limit 1";
+        $result = $DB->get_record_sql($sql, array('roleid' => $roleid));
         if (!empty($result)) {
             return $result;
         } else {
@@ -252,11 +255,13 @@ class auth_plugin_basic extends auth_plugin_base {
      */
     private function get_random_user_by_courseid($courseid) {
         global $DB;
-        $result = $DB->get_record_sql("select u.* from {user} as u
-            join {user_enrolments} as ue on ue.userid = u.id
-            join {enrol} as e on e.id = ue.enrolid
-            where suspended = 0 and e.courseid = ?
-            order by random() limit 1", [$courseid]);
+        $sql = "SELECT u.*
+                  FROM {user} u
+                  JOIN {user_enrolments} ue ON ue.userid = u.id
+                  JOIN {enrol} e ON e.id = ue.enrolid
+                 WHERE u.suspended = 0 AND e.courseid = :courseid
+              ORDER BY random() limit 1";
+        $result = $DB->get_record_sql($sql, array('courseid' => $courseid));
         if (!empty($result)) {
             return $result;
         } else {
@@ -277,12 +282,14 @@ class auth_plugin_basic extends auth_plugin_base {
 
         $coursecontext = context_course::instance($courseid);
 
-        $result = $DB->get_record_sql("select u.* from {user} as u
-            join {user_enrolments} as ue on ue.userid = u.id
-            join {enrol} as e on e.id = ue.enrolid
-            join {role_assignments} as ra on ra.userid = u.id and ra.contextid = ?
-            where suspended = 0 and e.courseid = ? and ra.roleid = ?
-            order by random() limit 1", [$coursecontext->id, $courseid, $roleid]);
+        $sql = "SELECT u.*
+                  FROM {user} u
+                  JOIN {user_enrolments} ue ON ue.userid = u.id
+                  JOIN {enrol} e ON e.id = ue.enrolid
+                  JOIN {role_assignments} ra ON ra.userid = u.id AND ra.contextid = :contextid
+                 WHERE u.suspended = 0 AND e.courseid = :courseid AND ra.roleid = :roleid
+              ORDER BY random() limit 1";
+        $result = $DB->get_record_sql($sql, array('courseid' => $courseid, 'contextid' => $coursecontext->id, 'roleid' => $roleid));
         if (!empty($result)) {
             return $result;
         } else {
