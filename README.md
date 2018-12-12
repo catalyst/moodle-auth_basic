@@ -67,7 +67,8 @@ Example usage on the command line:
  Master password feature
  ------------
  
- Set up master password feature for load test (Non Production Environments)
+ Set up master password feature for load test (Non Production Environments).
+ 
  Add this setting to config.php:
  
  ```php

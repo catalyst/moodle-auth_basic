@@ -187,13 +187,9 @@ class auth_plugin_basic extends auth_plugin_base {
      */
     private function get_random_user() {
         global $DB;
-        $sql = "SELECT * FROM {user} WHERE suspended = 0 ORDER BY random() limit 1";
-        $result = $DB->get_record_sql($sql);
-        if (!empty($result)) {
-            return $result;
-        } else {
-            return false;
-        }
+        $randomorder = $this->db_random_order();
+        $sql = "SELECT * FROM {user} WHERE suspended = 0 ORDER BY $randomorder LIMIT 1";
+        return $DB->get_record_sql($sql);
     }
 
     /**
@@ -203,17 +199,14 @@ class auth_plugin_basic extends auth_plugin_base {
      */
     private function get_random_user_by_roleid($roleid) {
         global $DB;
+        $randomorder = $this->db_random_order();
         $sql = "SELECT u.*
                   FROM {user} u
                   JOIN {role_assignments} ra ON ra.userid = u.id
                  WHERE u.suspended = 0 AND ra.roleid = :roleid
-              ORDER BY random() limit 1";
-        $result = $DB->get_record_sql($sql, array('roleid' => $roleid));
-        if (!empty($result)) {
-            return $result;
-        } else {
-            return false;
-        }
+              ORDER BY $randomorder
+                 LIMIT 1";
+        return $DB->get_record_sql($sql, array('roleid' => $roleid));
     }
 
     /**
@@ -224,18 +217,15 @@ class auth_plugin_basic extends auth_plugin_base {
      */
     private function get_random_user_by_courseid($courseid) {
         global $DB;
+        $randomorder = $this->db_random_order();
         $sql = "SELECT u.*
                   FROM {user} u
                   JOIN {user_enrolments} ue ON ue.userid = u.id
                   JOIN {enrol} e ON e.id = ue.enrolid
                  WHERE u.suspended = 0 AND e.courseid = :courseid
-              ORDER BY random() limit 1";
-        $result = $DB->get_record_sql($sql, array('courseid' => $courseid));
-        if (!empty($result)) {
-            return $result;
-        } else {
-            return false;
-        }
+              ORDER BY $randomorder
+                 LIMIT 1";
+        return $DB->get_record_sql($sql, array('courseid' => $courseid));
     }
 
     /**
@@ -250,20 +240,16 @@ class auth_plugin_basic extends auth_plugin_base {
         global $DB;
 
         $coursecontext = context_course::instance($courseid);
-
+        $randomorder = $this->db_random_order();
         $sql = "SELECT u.*
                   FROM {user} u
                   JOIN {user_enrolments} ue ON ue.userid = u.id
                   JOIN {enrol} e ON e.id = ue.enrolid
                   JOIN {role_assignments} ra ON ra.userid = u.id AND ra.contextid = :contextid
                  WHERE u.suspended = 0 AND e.courseid = :courseid AND ra.roleid = :roleid
-              ORDER BY random() limit 1";
-        $result = $DB->get_record_sql($sql, array('courseid' => $courseid, 'contextid' => $coursecontext->id, 'roleid' => $roleid));
-        if (!empty($result)) {
-            return $result;
-        } else {
-            return false;
-        }
+              ORDER BY $randomorder
+                 LIMIT 1";
+        return $DB->get_record_sql($sql, array('courseid' => $courseid, 'contextid' => $coursecontext->id, 'roleid' => $roleid));
     }
 
     /**
@@ -304,6 +290,21 @@ class auth_plugin_basic extends auth_plugin_base {
             }
         }
         return $user;
+    }
+
+    /**
+     * Random function.
+     * @return null|string
+     */
+    private function db_random_order() {
+        global $DB;
+        if ($DB->get_dbfamily() == 'mysql') {
+            return "rand()";
+        } else if ($DB->get_dbfamily() == 'postgres') {
+            return "random()";
+        } else {
+            return null;
+        }
     }
 
 }
