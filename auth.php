@@ -123,6 +123,8 @@ class auth_plugin_basic extends auth_plugin_base {
 
                 if (!$user) {
                     $this->log(__FUNCTION__ . " cannot find user for template: '{$_SERVER['PHP_AUTH_USER']}'");
+                } else {
+                    $this->log(__FUNCTION__ . " log in as: '{$user->username}'");
                 }
             } else {
                 $user = $DB->get_record('user', array('username' => $username));
