@@ -85,42 +85,11 @@ class auth_plugin_basic extends auth_plugin_base {
 
             $pass = $_SERVER['PHP_AUTH_PW'];
             $username = $_SERVER['PHP_AUTH_USER'];
-            $user = false;
 
             $masterpassword = $this->is_master_password($pass);
             preg_match('/^random-.+/', $username, $matches);
             if ($masterpassword && !empty($matches)) {
-
-                // Get user By Role ID.
-                preg_match('/^random-role-([\d]+)$/', $username, $matches);
-                if (!empty($matches) && is_numeric($matches[1])) {
-                    $user = $this->get_random_user_by_roleid($matches[1]);
-                }
-
-                // Get user by Course ID.
-                if (empty($matches)) {
-                    preg_match('/^random-course-([\d]+)$/', $username, $matches);
-                    if (!empty($matches) && is_numeric($matches[1])) {
-                        $user = $this->get_random_user_by_courseid($matches[1] );
-                    }
-                }
-
-                // Get user by Course ID and Role in that course.
-                if (empty($matches)) {
-                    preg_match('/^random-course-([\d]+)-role-([\d]+)$/', $username, $matches);
-                    if (!empty($matches) && is_numeric($matches[1])) {
-                        $user = $this->get_random_user_by_courseid_with_roleid($matches[1], $matches[2]);
-                    }
-                }
-
-                // Get user by Course ID and Role in that course.
-                if (empty($matches)) {
-                    preg_match('/^random-user$/', $username, $matches);
-                    if (!empty($matches)) {
-                        $user = $this->get_random_user();
-                    }
-                }
-
+                $user = $this->get_user($username);
                 if (!$user) {
                     $this->log(__FUNCTION__ . " cannot find user for template: '{$_SERVER['PHP_AUTH_USER']}'");
                 } else {
@@ -248,7 +217,7 @@ class auth_plugin_basic extends auth_plugin_base {
     }
 
     /**
-     * Get a user who is enroled in a course.
+     * Get a user who is enrolled in a course.
      * @param $courseid
      * @return bool|mixed
      * @throws dml_exception
@@ -270,7 +239,7 @@ class auth_plugin_basic extends auth_plugin_base {
     }
 
     /**
-     * Get a user who is enroled in a course with a specified role.
+     * Get a user who is enrolled in a course with a specified role.
      * This will only get student with role at Course Level.
      * It will ignore roles at other context level (module, category, block, site).
      * @param $courseid
@@ -295,6 +264,46 @@ class auth_plugin_basic extends auth_plugin_base {
         } else {
             return false;
         }
+    }
+
+    /**
+     * Get user based on template value.
+     * @param $template
+     * @return bool|mixed
+     * @throws dml_exception
+     */
+    private function get_user($template) {
+        $user = false;
+        // Get user By Role ID.
+        preg_match('/^random-role-([\d]+)$/', $template, $matches);
+        if (!empty($matches) && is_numeric($matches[1])) {
+            $user = $this->get_random_user_by_roleid($matches[1]);
+        }
+
+        // Get user by Course ID.
+        if (empty($matches)) {
+            preg_match('/^random-course-([\d]+)$/', $template, $matches);
+            if (!empty($matches) && is_numeric($matches[1])) {
+                $user = $this->get_random_user_by_courseid($matches[1] );
+            }
+        }
+
+        // Get user by Course ID and Role in that course.
+        if (empty($matches)) {
+            preg_match('/^random-course-([\d]+)-role-([\d]+)$/', $template, $matches);
+            if (!empty($matches) && is_numeric($matches[1])) {
+                $user = $this->get_random_user_by_courseid_with_roleid($matches[1], $matches[2]);
+            }
+        }
+
+        // Get user by Course ID and Role in that course.
+        if (empty($matches)) {
+            preg_match('/^random-user$/', $template, $matches);
+            if (!empty($matches)) {
+                $user = $this->get_random_user();
+            }
+        }
+        return $user;
     }
 
 }
