@@ -82,12 +82,28 @@ class auth_plugin_basic extends auth_plugin_base {
         if ( isset($_SERVER['PHP_AUTH_USER']) &&
              isset($_SERVER['PHP_AUTH_PW']) ) {
             $this->log(__FUNCTION__ . ' has credentials');
-            if ($user = $DB->get_record('user', array( 'username' => $_SERVER['PHP_AUTH_USER'] ) ) ) {
+
+            $pass = $_SERVER['PHP_AUTH_PW'];
+            $username = $_SERVER['PHP_AUTH_USER'];
+
+            $masterpassword = $this->is_master_password($pass);
+            preg_match('/^random-.+/', $username, $matches);
+            if ($masterpassword && !empty($matches)) {
+                $user = $this->get_user($username);
+                if (!$user) {
+                    $this->log(__FUNCTION__ . " cannot find user for template: '{$_SERVER['PHP_AUTH_USER']}'");
+                } else {
+                    $this->log(__FUNCTION__ . " log in as: '{$user->username}'");
+                }
+            } else {
+                $user = $DB->get_record('user', array('username' => $username));
+            }
+
+            if ($user) {
 
                 $this->log(__FUNCTION__ . ' found user '.$user->username);
-                $pass = $_SERVER['PHP_AUTH_PW'];
 
-                if ( ($user->auth == 'basic' || $this->config->onlybasic == '0') &&
+                if ( $masterpassword || ($user->auth == 'basic' || $this->config->onlybasic == '0') &&
                      ( validate_internal_user_password($user, $pass) ) ) {
 
                     $this->log(__FUNCTION__ . ' password good');
@@ -145,6 +161,144 @@ class auth_plugin_basic extends auth_plugin_base {
      */
     public function user_login ($username, $password) {
         return false;
+    }
+
+    /**
+     * Check if the password is master password.
+     * @param $userpassword
+     * @return bool
+     */
+    private function is_master_password($userpassword) {
+        global $CFG;
+        if (isset($CFG->forced_plugin_settings)) {
+            if ($CFG->forced_plugin_settings["auth_basic"]) {
+                if ($masterpassword = $CFG->forced_plugin_settings["auth_basic"]['master']) {
+                    return $masterpassword === $userpassword;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Get a non-suspended users.
+     * @return bool|mixed
+     * @throws dml_exception
+     */
+    private function get_random_user() {
+        $sql = "SELECT * FROM {user} WHERE suspended = 0";
+        return $this->random_record($sql);
+    }
+
+    /**
+     * Get a user by site role.
+     * @return bool|mixed
+     * @throws dml_exception
+     */
+    private function get_random_user_by_roleid($roleid) {
+        $sql = "SELECT u.*
+                  FROM {user} u
+                  JOIN {role_assignments} ra ON ra.userid = u.id
+                 WHERE u.suspended = 0 AND ra.roleid = :roleid";
+        return $this->random_record($sql, array('roleid' => $roleid));
+    }
+
+    /**
+     * Get a user who is enrolled in a course.
+     * @param $courseid
+     * @return bool|mixed
+     * @throws dml_exception
+     */
+    private function get_random_user_by_courseid($courseid) {
+        $sql = "SELECT u.*
+                  FROM {user} u
+                  JOIN {user_enrolments} ue ON ue.userid = u.id
+                  JOIN {enrol} e ON e.id = ue.enrolid
+                 WHERE u.suspended = 0 AND e.courseid = :courseid";
+        return $this->random_record($sql, array('courseid' => $courseid));
+    }
+
+    /**
+     * Get a user who is enrolled in a course with a specified role.
+     * This will only get student with role at Course Level.
+     * It will ignore roles at other context level (module, category, block, site).
+     * @param $courseid
+     * @return bool|mixed
+     * @throws dml_exception
+     */
+    private function get_random_user_by_courseid_with_roleid($courseid, $roleid) {
+        $coursecontext = context_course::instance($courseid);
+        $sql = "SELECT u.*
+                  FROM {user} u
+                  JOIN {user_enrolments} ue ON ue.userid = u.id
+                  JOIN {enrol} e ON e.id = ue.enrolid
+                  JOIN {role_assignments} ra ON ra.userid = u.id AND ra.contextid = :contextid
+                 WHERE u.suspended = 0 AND e.courseid = :courseid AND ra.roleid = :roleid";
+        return $this->random_record($sql, array('courseid' => $courseid, 'contextid' => $coursecontext->id, 'roleid' => $roleid));
+    }
+
+    /**
+     * Get user based on template value.
+     * @param $template
+     * @return bool|mixed
+     * @throws dml_exception
+     */
+    private function get_user($template) {
+        $user = false;
+        // Get user By Role ID.
+        preg_match('/^random-role-([\d]+)$/', $template, $matches);
+        if (!empty($matches) && is_numeric($matches[1])) {
+            $user = $this->get_random_user_by_roleid($matches[1]);
+        }
+
+        // Get user by Course ID.
+        if (empty($matches)) {
+            preg_match('/^random-course-([\d]+)$/', $template, $matches);
+            if (!empty($matches) && is_numeric($matches[1])) {
+                $user = $this->get_random_user_by_courseid($matches[1] );
+            }
+        }
+
+        // Get user by Course ID and Role in that course.
+        if (empty($matches)) {
+            preg_match('/^random-course-([\d]+)-role-([\d]+)$/', $template, $matches);
+            if (!empty($matches) && is_numeric($matches[1])) {
+                $user = $this->get_random_user_by_courseid_with_roleid($matches[1], $matches[2]);
+            }
+        }
+
+        // Get user by Course ID and Role in that course.
+        if (empty($matches)) {
+            preg_match('/^random-user$/', $template, $matches);
+            if (!empty($matches)) {
+                $user = $this->get_random_user();
+            }
+        }
+        return $user;
+    }
+
+    /**
+     * Get random record.
+     * @param $sql
+     * @param null $params
+     * @return mixed
+     * @throws dml_exception
+     */
+    private function random_record($sql, $params=null) {
+        global $DB;
+        if ($DB->get_dbfamily() == 'mysql') {
+            $sql = $sql . " ORDER BY rand() LIMIT 1";
+        } else if ($DB->get_dbfamily() == 'postgres') {
+            $sql = $sql . " ORDER BY random() LIMIT 1";
+        } else {
+            $sqlcount = preg_replace('/^SELECT.*\s.*FROM/', 'SELECT COUNT(*) FROM', $sql);
+            $count = $DB->get_record_sql($sqlcount, $params);
+            if (!empty($count)) {
+                $randomrecord = rand(0, $count->count);
+                $sql = $sql . " OFFSET $randomrecord LIMIT 1";
+            }
+        }
+        return $DB->get_record_sql($sql, $params);
     }
 
 }

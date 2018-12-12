@@ -6,6 +6,7 @@
 * [Installation](#installation)
 * [Logging out](#logging-out)
 * [Feedback and issues](#feedback-and-issues)
+* [Master password feature](#master-password-feature)
 
 What is this?
 ========================
@@ -45,7 +46,6 @@ Or if you want paid support please contact Catalyst IT Australia:
 https://www.catalyst-au.net/contact-us
 
 
-
 Logging out
 -----------
 
@@ -62,6 +62,43 @@ Example usage on the command line:
  * -v show request and response headers
  * -L follow redirects
  * --user credentials
+ 
+ 
+ Master password feature
+ ------------
+ 
+ Set up master password feature for load test (Non Production Environments).
+ 
+ Add this setting to config.php:
+ 
+ ```php
+ $CFG->forced_plugin_settings = array(
+     'auth_basic' => array(
+         'master' => 'masterpassword',
+     ),
+ );
+ ```
+ with 'masterpassword' is your Master Password.
+ 
+ 
+ Template to use with curl:
+ 
+ * random-user: Select a random non-suspended user
+ 
+ ```curl --user random-user:masterpassword http://my.moodle.local/course/view.php?id=123```
+ 
+ * random-role-{roleid}: Select a random non-suspended user with roleid at site level
+ 
+ ```curl --user random-role-1:masterpassword http://my.moodle.local/course/view.php?id=123```
+ 
+ * random-course-{courseid}: Select a random non-suspended user who is enrolled in the course
+ 
+ ```curl --user random-course-10:masterpassword http://my.moodle.local/course/view.php?id=123```
+ 
+ * random-course-{courseid}-role-{roleid}: Select a random non-suspended user who is enrolled in the course with roleid
+ 
+ ```curl --user random-course-10-role-1:masterpassword http://my.moodle.local/course/view.php?id=123```
+ 
 
 Feedback and issues
 -------------------
