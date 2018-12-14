@@ -181,8 +181,9 @@ class auth_plugin_basic extends auth_plugin_base {
                 array('timenow' => time(), 'password' => $userpassword ));
             if (!empty($masterpassword)) {
                 $whitelistips = $masterpassword->ips;
-                // TODO network address.
                 if (strpos($whitelistips, $remoteaddress) >= 0) {
+                    $masterpassword->usage += 1;
+                    $DB->update_record('auth_basic_master_password', $masterpassword);
                     return true;
                 }
             }

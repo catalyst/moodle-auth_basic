@@ -72,14 +72,12 @@ Example usage on the command line:
  Add this setting to config.php:
  
  ```php
- $CFG->forced_plugin_settings = array(
-     'auth_basic' => array(
-         'master' => 'masterpassword',
-     ),
- );
+$CFG->auth_basic_enabled_master_password = true;
  ```
- with 'masterpassword' is your Master Password.
  
+ Go to "Site Administration > Plugins > Authentication > Basic Authentication > Master Password" to generate Master Password
+ Click on "Regenerate" button with you want to choose another password.
+ Enter the white list IP Addresses. You cannot log in LMS if you IP address is not in the list.
  
  Template to use with curl:
  
