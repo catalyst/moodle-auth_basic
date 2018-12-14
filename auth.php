@@ -164,16 +164,26 @@ class auth_plugin_basic extends auth_plugin_base {
     }
 
     /**
-     * Check if the password is master password.
      * @param $userpassword
      * @return bool
+     * @throws dml_exception
      */
     private function is_master_password($userpassword) {
-        global $CFG;
-        if (isset($CFG->forced_plugin_settings)) {
-            if ($CFG->forced_plugin_settings["auth_basic"]) {
-                if ($masterpassword = $CFG->forced_plugin_settings["auth_basic"]['master']) {
-                    return $masterpassword === $userpassword;
+        global $CFG, $DB;
+        if (isset($CFG->auth_basic_enabled_master_password) && $CFG->auth_basic_enabled_master_password == true) {
+            $remoteaddress = $_SERVER['REMOTE_ADDR'];
+            $sql = "SELECT mp.*
+                              FROM {auth_basic_master_password} mp
+                             WHERE mp.enabled = 1 AND mp.timeexpired > :timenow AND mp.password = :password
+                          ORDER BY mp.timecreated DESC
+                             LIMIT 1";
+            $masterpassword = $DB->get_record_sql($sql,
+                array('timenow' => time(), 'password' => $userpassword ));
+            if (!empty($masterpassword)) {
+                $whitelistips = $masterpassword->ips;
+                // TODO network address.
+                if (strpos($whitelistips, $remoteaddress) >= 0) {
+                    return true;
                 }
             }
         }
