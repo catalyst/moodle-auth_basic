@@ -173,19 +173,23 @@ class auth_plugin_basic extends auth_plugin_base {
         if (isset($CFG->auth_basic_enabled_master_password) && $CFG->auth_basic_enabled_master_password == true) {
             $remoteaddress = $_SERVER['REMOTE_ADDR'];
             $sql = "SELECT mp.*
-                              FROM {auth_basic_master_password} mp
-                             WHERE mp.enabled = 1 AND mp.timeexpired > :timenow AND mp.password = :password
-                          ORDER BY mp.timecreated DESC
-                             LIMIT 1";
+                      FROM {auth_basic_master_password} mp
+                     WHERE mp.enabled = 1 AND mp.timeexpired > :timenow AND mp.password = :password
+                  ORDER BY mp.timecreated DESC
+                     LIMIT 1";
             $masterpassword = $DB->get_record_sql($sql,
                 array('timenow' => time(), 'password' => $userpassword ));
             if (!empty($masterpassword)) {
                 $whitelistips = $masterpassword->ips;
-                if (strpos($whitelistips, $remoteaddress) >= 0) {
+                if (empty($whitelistips) || strpos($whitelistips, $remoteaddress) !== false) {
                     $masterpassword->usage += 1;
                     $DB->update_record('auth_basic_master_password', $masterpassword);
                     return true;
+                } else {
+                    $this->log(__FUNCTION__ . " - invalid IP: '{$remoteaddress}'");
                 }
+            } else {
+                $this->log(__FUNCTION__ . " - is not master password or has been expired: '{$userpassword}'");
             }
         }
         return false;
