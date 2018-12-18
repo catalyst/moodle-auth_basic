@@ -69,11 +69,19 @@ Example usage on the command line:
  
  Set up master password feature for load test (Non Production Environments).
  
- Add this setting to config.php:
+ Add these settings to config.php:
  
  ```php
 $CFG->auth_basic_enabled_master_password = true;
  ```
+ 
+ and 
+  ```php
+$CFG->auth_basic_whitelist_ips = 'x.x.x.x';
+  ```
+ Where x.x.x.x is the IP address allowed to access Moodle using master password.
+ If it is not set, there will be no IP restriction.
+ 
  
  Go to "Site Administration > Plugins > Authentication > Basic Authentication > Master Password" to generate Master Password
  Click on "Regenerate" button with you want to choose another password.
