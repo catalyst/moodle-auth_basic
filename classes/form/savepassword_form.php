@@ -44,7 +44,7 @@ class savepassword_form extends moodleform {
             $mform->addElement('hidden', 'whitelist', $whitelist);
         }
 
-        $buttonarray=array();
+        $buttonarray = array();
         $buttonarray[] =& $mform->createElement('submit', 'submitbutton', get_string('savepassword', 'auth_basic'));
         $buttonarray[] =& $mform->createElement('cancel', 'cancel', get_string('regeneratepassword', 'auth_basic'));
         $mform->addGroup($buttonarray, 'buttonar', '', array(' '), false);

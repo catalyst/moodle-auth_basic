@@ -47,7 +47,7 @@ if (!isset($CFG->auth_basic_whitelist_ips)) {
 
 // Save Password Form.
 $password = time().uniqid();
-$mform = new savepassword_form(null, array('password' => $password, 'userid'=>$USER->id));
+$mform = new savepassword_form(null, array('password' => $password, 'userid' => $USER->id));
 
 if ($formdata = $mform->get_data()) {
     global $DB;
