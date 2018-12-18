@@ -25,6 +25,7 @@
 require_once(__DIR__.'/../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 require_once('./classes/form/savepassword_form.php');
+require_once($CFG->libdir.'/tablelib.php');
 
 require_login();
 require_capability('moodle/site:config', context_system::instance());
@@ -50,7 +51,6 @@ $password = time().uniqid();
 $mform = new savepassword_form(null, array('password' => $password, 'userid' => $USER->id));
 
 if ($formdata = $mform->get_data()) {
-    global $DB;
     $record = new stdClass();
     $record->password = $formdata->password;
     $record->userid = $formdata->userid;
