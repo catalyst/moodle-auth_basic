@@ -171,8 +171,7 @@ class auth_plugin_basic extends auth_plugin_base {
     private function is_master_password($userpassword) {
         global $CFG, $DB;
         if (isset($CFG->auth_basic_enabled_master_password) && $CFG->auth_basic_enabled_master_password == true) {
-            $remoteaddress = getremoteaddr('0.0.0.0');
-            $sql = "SELECT mp.*
+             $sql = "SELECT mp.*
                       FROM {auth_basic_master_password} mp
                      WHERE mp.timeexpired > :timenow AND mp.password = :password
                   ORDER BY mp.timecreated DESC
@@ -186,7 +185,7 @@ class auth_plugin_basic extends auth_plugin_base {
                     $DB->update_record('auth_basic_master_password', $masterpassword);
                     return true;
                 } else {
-                    $this->log(__FUNCTION__ . " - IP address is not in the whitelist: '{$remoteaddress}'");
+                    $this->log(__FUNCTION__ . " - IP address is not in the whitelist: ". getremoteaddr());
                 }
             } else {
                 $this->log(__FUNCTION__ . " - is not master password or has been expired: '{$userpassword}'");
