@@ -28,7 +28,6 @@ require_once("$CFG->libdir/formslib.php");
 class savepassword_form extends moodleform {
 
     protected function definition() {
-        global $CFG, $OUTPUT;
         $mform = $this->_form;
 
         $mform->addElement('text', 'password', get_string('password', 'auth_basic'), array('disabled' => true));
