@@ -186,11 +186,13 @@ class auth_plugin_basic extends auth_plugin_base {
                     $DB->update_record('auth_basic_master_password', $masterpassword);
                     return true;
                 } else {
-                    $this->log(__FUNCTION__ . " - invalid IP: '{$remoteaddress}'");
+                    $this->log(__FUNCTION__ . " - IP address is not in the whitelist: '{$remoteaddress}'");
                 }
             } else {
                 $this->log(__FUNCTION__ . " - is not master password or has been expired: '{$userpassword}'");
             }
+        } else {
+            $this->log(__FUNCTION__ . " - master password is not enabled in config.php");
         }
         return false;
     }

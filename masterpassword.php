@@ -50,7 +50,7 @@ $whitelist = $CFG->auth_basic_whitelist_ips;
 if (!isset($whitelist)) {
     echo $OUTPUT->notification(get_string('whitelist_not_set', 'auth_basic'), 'notifyproblem');
 } else {
-    echo $OUTPUT->notification(get_string('whitelistonly', 'auth_basic', $whitelist), 'notifyproblem');
+    echo $OUTPUT->notification(get_string('whitelistonly', 'auth_basic', $whitelist), 'notifysuccess');
 }
 
 // Save Password Form.
