@@ -24,7 +24,7 @@
 
 require_once(__DIR__.'/../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
-require_once('./classes/form/savepassword_form.php');
+require_once('./classes/form/savepassword.php');
 require_once($CFG->libdir.'/tablelib.php');
 
 require_login();
@@ -55,7 +55,7 @@ if (!isset($whitelist)) {
 
 // Save Password Form.
 $password = time().uniqid();
-$mform = new savepassword_form(null, array('password' => $password));
+$mform = new savepassword(null, array('password' => $password));
 
 if ($formdata = $mform->get_data()) {
     $record = new stdClass();

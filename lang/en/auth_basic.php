@@ -52,5 +52,3 @@ $string["generated_masterpassword"] = "Generated Passwords";
 
 $string["savepassword"] = "Save Password";
 $string["regeneratepassword"] = "Regenerate Passwords";
-
-

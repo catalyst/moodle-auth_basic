@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 require_once("$CFG->libdir/formslib.php");
 
-class savepassword_form extends moodleform {
+class savepassword extends moodleform {
 
     protected function definition() {
         $mform = $this->_form;
