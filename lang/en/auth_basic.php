@@ -40,9 +40,11 @@ $string["privacy:no_data_reason"] = "The 'auth basic' plugins doesn't store any 
 $string["masterpassword"] = "Master Password";
 $string["password"] = "Password";
 
+$string["auth_basic_not_enabled"] = 'Auth Basic is not enabled. The plugin won\'t work until you enable it in \'Manage Authenticaton\'' ;
 $string["masterpassword_not_enabled"] = 'Please add <code>$CFG->auth_basic_enabled_master_password = true;</code> in config.php to enable master password.<br/>
 You are able to generate new master passwords, but they won\'t work until the config is enabled.';
 $string["whitelist_not_set"] = '<code>$CFG->auth_basic_whitelist_ips</code> is not set up in config.php, there will be no IP restriction.';
+$string["whitelistonly"] = 'Only allow access to the following ips: <strong>{$a}</strong>';
 
 $string["masterpassword_desc"] = "Master Password";
 $string["menusettings"] = "Settings";
@@ -51,5 +53,4 @@ $string["generated_masterpassword"] = "Generated Passwords";
 $string["savepassword"] = "Save Password";
 $string["regeneratepassword"] = "Regenerate Passwords";
 
-$string["whitelistonly"] = 'Only allow access to the following ips: <strong>{$a}</strong>';
-$string["whitelistonly_help"] = 'The white listed ips is set in <code>$CFG->auth_basic_whitelist_ips</code> in config.php';
+

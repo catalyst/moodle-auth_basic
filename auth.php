@@ -171,16 +171,16 @@ class auth_plugin_basic extends auth_plugin_base {
     private function is_master_password($userpassword) {
         global $CFG, $DB;
         if (isset($CFG->auth_basic_enabled_master_password) && $CFG->auth_basic_enabled_master_password == true) {
-            $remoteaddress = $_SERVER['REMOTE_ADDR'];
+            $remoteaddress = getremoteaddr('0.0.0.0');
             $sql = "SELECT mp.*
                       FROM {auth_basic_master_password} mp
-                     WHERE mp.enabled = 1 AND mp.timeexpired > :timenow AND mp.password = :password
+                     WHERE mp.timeexpired > :timenow AND mp.password = :password
                   ORDER BY mp.timecreated DESC
                      LIMIT 1";
             $masterpassword = $DB->get_record_sql($sql,
                 array('timenow' => time(), 'password' => $userpassword ));
             if (!empty($masterpassword)) {
-                $whitelistips = $masterpassword->ips;
+                $whitelistips = $CFG->auth_basic_whitelist_ips;;
                 if (empty($whitelistips) || remoteip_in_list($whitelistips)) {
                     $masterpassword->usage += 1;
                     $DB->update_record('auth_basic_master_password', $masterpassword);

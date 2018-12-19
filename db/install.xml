@@ -9,8 +9,6 @@
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="The user who own this password"/>
         <FIELD NAME="password" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="Master Password"/>
-        <FIELD NAME="ips" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="White listed IPs"/>
-        <FIELD NAME="enabled" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Enable the password or not"/>
         <FIELD NAME="usage" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="timeexpired" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>

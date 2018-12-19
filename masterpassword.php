@@ -42,8 +42,15 @@ if (!isset($CFG->auth_basic_enabled_master_password)) {
     echo $OUTPUT->notification(get_string('masterpassword_not_enabled', 'auth_basic'), 'notifyproblem');
 }
 
-if (!isset($CFG->auth_basic_whitelist_ips)) {
+if (!is_enabled_auth('basic')) {
+    echo $OUTPUT->notification(get_string('auth_basic_not_enabled', 'auth_basic'), 'notifyproblem');
+}
+
+$whitelist = $CFG->auth_basic_whitelist_ips;
+if (!isset($whitelist)) {
     echo $OUTPUT->notification(get_string('whitelist_not_set', 'auth_basic'), 'notifyproblem');
+} else {
+    echo $OUTPUT->notification(get_string('whitelistonly', 'auth_basic', $whitelist), 'notifyproblem');
 }
 
 // Save Password Form.
@@ -54,8 +61,6 @@ if ($formdata = $mform->get_data()) {
     $record = new stdClass();
     $record->password = $formdata->password;
     $record->userid = $USER->id;
-    $record->enabled = 1;
-    $record->ips = $formdata->whitelistonly ? trim($formdata->whitelist) : '';
     $record->usage = 0;
     $record->timecreated = time();
     $record->timeexpired = time() + DAYSECS;
