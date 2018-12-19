@@ -34,8 +34,6 @@ class savepassword_form extends moodleform {
         $mform->addElement('text', 'password', get_string('password', 'auth_basic'), array('disabled' => true));
         $mform->setDefault('password', $this->_customdata['password']);
 
-        $mform->addElement('hidden', 'userid', $this->_customdata['userid']);
-
         $whitelist = $CFG->auth_basic_whitelist_ips;
         if (isset($whitelist)) {
             $mform->addElement('checkbox', 'whitelistonly', get_string('whitelistonly', 'auth_basic', $whitelist));

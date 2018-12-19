@@ -48,12 +48,12 @@ if (!isset($CFG->auth_basic_whitelist_ips)) {
 
 // Save Password Form.
 $password = time().uniqid();
-$mform = new savepassword_form(null, array('password' => $password, 'userid' => $USER->id));
+$mform = new savepassword_form(null, array('password' => $password));
 
 if ($formdata = $mform->get_data()) {
     $record = new stdClass();
     $record->password = $formdata->password;
-    $record->userid = $formdata->userid;
+    $record->userid = $USER->id;
     $record->enabled = 1;
     $record->ips = $formdata->whitelistonly ? trim($formdata->whitelist) : '';
     $record->usage = 0;
