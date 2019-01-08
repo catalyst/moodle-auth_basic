@@ -73,10 +73,48 @@ if ($formdata = $mform->get_data()) {
 
 // Master Password Table.
 echo $OUTPUT->heading(get_string('generated_masterpassword', 'auth_basic'));
-$table = new table_sql('master_password');
-$table->set_sql('*', "{auth_basic_master_password}", 'userid = :userid', array('userid' => $USER->id));
-$table->define_baseurl("$CFG->wwwroot/auth/basic/masterpassword.php");
-$table->sortable(true, 'timecreated', SORT_DESC);
-$table->out(50, true);
+
+$sql = "SELECT COUNT(*) FROM {auth_basic_master_password} p WHERE p.userid = :userid";
+$record = $DB->get_record_sql($sql, array('userid' => $USER->id));
+if (!empty($record) && ($total = $record->count) > 0) {
+    $perpage = 20;
+    $page = optional_param('page', 0, PARAM_INT);
+    $offset = $page * $perpage;
+
+    $sql = "SELECT p.*
+              FROM {auth_basic_master_password} p
+             WHERE p.userid = :userid
+             ORDER BY p.timecreated DESC
+            OFFSET $offset
+             LIMIT $perpage";
+    $records = $DB->get_records_sql($sql, array('userid' => $USER->id));
+
+    if (!empty($records) && count($records) > 0) {
+        $table = new html_table();
+        $table->attributes['class'] = 'generaltable catalystadmins';
+        $table->head = array(
+            get_string('username', 'auth_basic'),
+            get_string('password', 'auth_basic'),
+            get_string('usage', 'auth_basic'),
+            get_string('timecreated', 'auth_basic'),
+            get_string('timeexpired', 'auth_basic'),
+        );
+
+        foreach ($records as $record) {
+            $row = array();
+            $row[] = fullname($USER);
+            $row[] = $record->password;
+            $row[] = $record->usage;
+            $row[] = userdate($record->timecreated, get_string('strftimerecentfull'));
+            $row[] = userdate($record->timeexpired, get_string('strftimerecentfull'));
+            $table->data[] = $row;
+        }
+        echo html_writer::table($table);
+        $baseurl = new moodle_url('/auth/basic/masterpassword.php', array('perpage' => $perpage));
+        echo $OUTPUT->paging_bar($total, $page, $perpage, $baseurl);
+    }
+}
+
+
 
 echo $OUTPUT->footer();
