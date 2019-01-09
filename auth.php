@@ -164,18 +164,34 @@ class auth_plugin_basic extends auth_plugin_base {
     }
 
     /**
-     * Check if the password is master password.
      * @param $userpassword
      * @return bool
+     * @throws dml_exception
      */
     private function is_master_password($userpassword) {
-        global $CFG;
-        if (isset($CFG->forced_plugin_settings)) {
-            if ($CFG->forced_plugin_settings["auth_basic"]) {
-                if ($masterpassword = $CFG->forced_plugin_settings["auth_basic"]['master']) {
-                    return $masterpassword === $userpassword;
+        global $CFG, $DB;
+        if (isset($CFG->auth_basic_enabled_master_password) && $CFG->auth_basic_enabled_master_password == true) {
+             $sql = "SELECT mp.*
+                      FROM {auth_basic_master_password} mp
+                     WHERE mp.timeexpired > :timenow AND mp.password = :password
+                  ORDER BY mp.timecreated DESC
+                     LIMIT 1";
+            $masterpassword = $DB->get_record_sql($sql,
+                array('timenow' => time(), 'password' => $userpassword ));
+            if (!empty($masterpassword)) {
+                $whitelistips = $CFG->auth_basic_whitelist_ips;;
+                if (empty($whitelistips) || remoteip_in_list($whitelistips)) {
+                    $masterpassword->usage += 1;
+                    $DB->update_record('auth_basic_master_password', $masterpassword);
+                    return true;
+                } else {
+                    $this->log(__FUNCTION__ . " - IP address is not in the whitelist: ". getremoteaddr());
                 }
+            } else {
+                $this->log(__FUNCTION__ . " - is not master password or has been expired: '{$userpassword}'");
             }
+        } else {
+            $this->log(__FUNCTION__ . " - master password is not enabled in config.php");
         }
         return false;
     }

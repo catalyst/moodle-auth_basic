@@ -24,6 +24,9 @@
 
 defined('MOODLE_INTERNAL') || die;
 
+$ADMIN->add('authsettings', new admin_category('auth_basic', get_string('pluginname', 'auth_basic')));
+$settings = new admin_settingpage($section, get_string('menusettings', 'auth_basic'), 'moodle/site:config');
+
 if ($ADMIN->fulltree) {
 
     $yesno = array(get_string('no'), get_string('yes'));
@@ -44,3 +47,13 @@ if ($ADMIN->fulltree) {
     );
 
 }
+$ADMIN->add('auth_basic', $settings);
+$settings = null;
+
+$temp = new admin_externalpage(
+    'auth_basic_masterpassword',
+    get_string('masterpassword', 'auth_basic'),
+    new moodle_url($CFG->wwwroot.'/auth/basic/masterpassword.php')
+);
+
+$ADMIN->add('auth_basic', $temp);

@@ -15,18 +15,28 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version information
+ * Master Password Form
  *
  * @package    auth_basic
- * @copyright  Brendan Heywood <brendan@catalyst-au.net>
+ * @copyright  2018 Nathan Nguyen <nathannguyen@catalyst-au.nete>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
+require_once("$CFG->libdir/formslib.php");
 
-$plugin->version   = 2018121400;    // The current plugin version (Date: YYYYMMDDXX).
-$plugin->release   = 2018121400;    // Match release exactly to version.
-$plugin->requires  = 2014050800;    // Requires this Moodle version.
-$plugin->component = 'auth_basic';  // Full name of the plugin (used for diagnostics).
-$plugin->maturity  = MATURITY_STABLE;
+class savepassword extends moodleform {
 
+    protected function definition() {
+        $mform = $this->_form;
+
+        $mform->addElement('text', 'password', get_string('password', 'auth_basic'), array('disabled' => true));
+        $mform->setDefault('password', $this->_customdata['password']);
+
+        $buttonarray = array();
+        $buttonarray[] =& $mform->createElement('submit', 'submitbutton', get_string('savepassword', 'auth_basic'));
+        $buttonarray[] =& $mform->createElement('cancel', 'cancel', get_string('regeneratepassword', 'auth_basic'));
+        $mform->addGroup($buttonarray, 'buttonar', '', array(' '), false);
+
+    }
+}
