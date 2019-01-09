@@ -84,8 +84,9 @@ $CFG->auth_basic_whitelist_ips = 'x.x.x.x';
  
  
  Go to "Site Administration > Plugins > Authentication > Basic Authentication > Master Password" to generate Master Password
- Click on "Regenerate" button with you want to choose another password.
- Enter the white list IP Addresses. You cannot log in LMS if you IP address is not in the list.
+ Click on "Regenerate Password" button with you want to choose another password.
+ Click on "Save Password" button to create new master password.
+
  
  Template to use with curl:
  

@@ -74,20 +74,18 @@ if ($formdata = $mform->get_data()) {
 // Master Password Table.
 echo $OUTPUT->heading(get_string('generated_masterpassword', 'auth_basic'));
 
-$sql = "SELECT COUNT(*) FROM {auth_basic_master_password} p WHERE p.userid = :userid";
-$record = $DB->get_record_sql($sql, array('userid' => $USER->id));
+$sql = "SELECT COUNT(*) FROM {auth_basic_master_password}";
+$record = $DB->get_record_sql($sql);
 if (!empty($record) && ($total = $record->count) > 0) {
-    $perpage = 20;
+    $perpage = 5;
     $page = optional_param('page', 0, PARAM_INT);
     $offset = $page * $perpage;
 
-    $sql = "SELECT p.*
+    $sql = "SELECT p.*, u.firstname, u.lastname
               FROM {auth_basic_master_password} p
-             WHERE p.userid = :userid
-             ORDER BY p.timecreated DESC
-            OFFSET $offset
-             LIMIT $perpage";
-    $records = $DB->get_records_sql($sql, array('userid' => $USER->id));
+              JOIN {user} u on u.id = p.userid
+             ORDER BY p.timecreated DESC";
+    $records = $DB->get_records_sql($sql, null, $offset, $perpage);
 
     if (!empty($records) && count($records) > 0) {
         $table = new html_table();
@@ -102,8 +100,13 @@ if (!empty($record) && ($total = $record->count) > 0) {
 
         foreach ($records as $record) {
             $row = array();
-            $row[] = fullname($USER);
-            $row[] = $record->password;
+            $row[] = fullname($record);
+            if ($record->userid == $USER->id) {
+                $row[] = $record->password;
+            } else {
+                $row[] = "*hidden*";
+            }
+
             $row[] = $record->usage;
             $row[] = userdate($record->timecreated, get_string('strftimerecentfull'));
             $row[] = userdate($record->timeexpired, get_string('strftimerecentfull'));

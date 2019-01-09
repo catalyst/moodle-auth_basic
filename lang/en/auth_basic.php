@@ -48,7 +48,7 @@ $string["whitelistonly"] = 'Only allow access to the following ips: <strong>{$a}
 
 $string["masterpassword_desc"] = "Master Password";
 $string["menusettings"] = "Settings";
-$string["generated_masterpassword"] = "Generated Passwords";
+$string["generated_masterpassword"] = "Generated Password";
 
 $string["savepassword"] = "Save Password";
 $string["regeneratepassword"] = "Regenerate Passwords";
