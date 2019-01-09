@@ -77,7 +77,7 @@ echo $OUTPUT->heading(get_string('generated_masterpassword', 'auth_basic'));
 $sql = "SELECT COUNT(*) FROM {auth_basic_master_password}";
 $record = $DB->get_record_sql($sql);
 if (!empty($record) && ($total = $record->count) > 0) {
-    $perpage = 5;
+    $perpage = 20;
     $page = optional_param('page', 0, PARAM_INT);
     $offset = $page * $perpage;
 
