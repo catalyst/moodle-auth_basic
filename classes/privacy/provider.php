@@ -25,30 +25,135 @@ namespace auth_basic\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
-use core_privacy\local\legacy_polyfill;
+use core_privacy\local\metadata\collection;
+use core_privacy\local\request\approved_contextlist;
+use core_privacy\local\request\context;
+use core_privacy\local\request\contextlist;
 
-/**
- * Privacy provider for the authentication manual.
- *
- * @copyright  2018 Carlos Escobedo <carlos@moodle.com>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
+
 class provider implements
-    \core_privacy\local\metadata\null_provider {
-
-    use legacy_polyfill;
+    \core_privacy\local\metadata\provider,
+    \core_privacy\local\request\plugin\provider {
 
     /**
-     * Get the language string identifier with the component's language
-     * file to explain why this plugin stores no data.
+     * Returns meta data about this system.
      *
-     * This function is compatible with old php version. (Diff is the underscore '_' in the beginning)
-     * But the get_reason is still available because of the trait legacy_polyfill.
-     *
-     * @return  string
+     * @param   collection $collection The initialised collection to add items to.
+     * @return  collection     A listing of user data stored through this system.
      */
-    public static function _get_reason() {
-        return 'privacy:no_data_reason';
+    public static function get_metadata(collection $collection): collection {
+        $collection->add_database_table('auth_basic_master_password', [
+            'userid' => 'privacy:metadata:auth_basic_master_password:userid',
+        ], 'privacy:metadata:auth_basic_master_password');
+
+        return $collection;
     }
 
+    /**
+     * Get the list of contexts that contain user information for the specified user.
+     *
+     * @param   int $userid The user to search.
+     * @return  contextlist   $contextlist  The contextlist containing the list of contexts used in this plugin.
+     */
+    public static function get_contexts_for_userid(int $userid): contextlist {
+        $contextlist = new contextlist();
+
+        $sql = "SELECT c.id
+                  FROM {auth_basic_master_password} mp
+                  JOIN {context} c ON c.instanceid = mp.userid AND c.contextlevel = :contextuser
+                 WHERE mp.userid = :userid
+              GROUP BY c.id";
+
+        $params = [
+            'contextuser'   => CONTEXT_USER,
+            'userid'        => $userid
+        ];
+
+        $contextlist->add_from_sql($sql, $params);
+
+        return $contextlist;
+
+    }
+
+    /**
+     * Export all user data for the specified user, in the specified contexts.
+     *
+     * @param   approved_contextlist $contextlist The approved contexts to export information for.
+     */
+    public static function export_user_data(approved_contextlist $contextlist) {
+        global $DB;
+
+        $contexts = $contextlist->get_contexts();
+        if (count($contexts) == 0) {
+            return;
+        }
+        $context = reset($contexts);
+
+        if ($context->contextlevel !== CONTEXT_USER) {
+            return;
+        }
+        $userid = $context->instanceid;
+
+        $subcontext = [
+            get_string('pluginname', 'auth_basic'),
+            get_string('privacy:metadata:masterpassword', 'auth_basic')
+        ];
+
+        $sql = "SELECT *
+                  FROM {auth_basic_master_password} mp
+                 WHERE mp.userid = :userid
+              ORDER BY mp.timecreated";
+
+        $params = [
+            'userid' => $userid
+        ];
+
+        $password = $DB->get_records_sql($sql, $params);
+
+        $data = (object) [
+            'password' => $password
+        ];
+
+        writer::with_context($context)->export_data($subcontext, $data);
+    }
+
+    /**
+     * Delete all data for all users in the specified context.
+     *
+     * @param   context $context The specific context to delete data for.
+     */
+    public static function delete_data_for_all_users_in_context(\context $context)
+    {
+        global $DB;
+
+        if ($context->contextlevel !== CONTEXT_USER) {
+            return;
+        }
+        $userid = $context->instanceid;
+
+        $DB->delete_records('auth_basic_master_password', ['userid' => $userid]);
+    }
+
+    /**
+     * Delete all user data for the specified user, in the specified contexts.
+     *
+     * @param   approved_contextlist $contextlist The approved contexts and user information to delete information for.
+     */
+    public static function delete_data_for_user(approved_contextlist $contextlist)
+    {
+        global $DB;
+
+        $contexts = $contextlist->get_contexts();
+        if (count($contexts) == 0) {
+            return;
+        }
+        $context = reset($contexts);
+
+        if ($context->contextlevel !== CONTEXT_USER) {
+            return;
+        }
+        $userid = $context->instanceid;
+
+        $DB->delete_records('auth_basic_master_password', ['userid' => $userid]);
+    }
 }

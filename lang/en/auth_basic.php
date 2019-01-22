@@ -35,7 +35,9 @@ $string['send401_cancel'] = 'You need to enter a valid username and password';
 /*
  * Privacy provider (GDPR)
  */
-$string["privacy:no_data_reason"] = "The 'auth basic' plugins doesn't store any personnel data.";
+$string["privacy:metadata:auth_basic_master_password"] = "Master password.";
+$string["privacy:metadata:auth_basic_master_password:userid"] = "User who created master password.";
+$string["privacy:metadata:masterpassword"] = "masterpassword";
 
 $string["masterpassword"] = "Master Password";
 $string["password"] = "Password";
