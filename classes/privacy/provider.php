@@ -27,12 +27,15 @@ defined('MOODLE_INTERNAL') || die();
 
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_contextlist;
+use core_privacy\local\request\approved_userlist;
 use core_privacy\local\request\context;
 use core_privacy\local\request\contextlist;
-
+use core_privacy\local\request\userlist;
+use core_privacy\local\request\writer;
 
 class provider implements
     \core_privacy\local\metadata\provider,
+    \core_privacy\local\request\core_userlist_provider,
     \core_privacy\local\request\plugin\provider {
 
     /**
@@ -150,6 +153,46 @@ class provider implements
         $context = reset($contexts);
 
         if ($context->contextlevel !== CONTEXT_USER) {
+            return;
+        }
+        $userid = $context->instanceid;
+
+        $DB->delete_records('auth_basic_master_password', ['userid' => $userid]);
+    }
+
+    /**
+     * Get the list of users who have data within a context.
+     *
+     * @param   userlist $userlist The userlist containing the list of users who have data in this context/plugin combination.
+     */
+    public static function get_users_in_context(userlist $userlist) {
+        $context = $userlist->get_context();
+
+        if ($context->contextlevel != CONTEXT_USER) {
+            return;
+        }
+
+        $sql = "SELECT mp.userid
+                  FROM {auth_basic_master_password} mp
+                 WHERE mp.userid = :userid";
+
+        $params = [
+            'userid' => $context->instanceid
+        ];
+
+        $userlist->add_from_sql('userid', $sql, $params);
+    }
+
+    /**
+     * Delete multiple users within a single context.
+     *
+     * @param   approved_userlist $userlist The approved context and user information to delete information for.
+     */
+    public static function delete_data_for_users(approved_userlist $userlist) {
+        global $DB;
+        $context = $userlist->get_context();
+
+        if ($context->contextlevel != CONTEXT_USER) {
             return;
         }
         $userid = $context->instanceid;
