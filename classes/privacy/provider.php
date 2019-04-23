@@ -44,7 +44,7 @@ class provider implements
      * @param   collection $collection The initialised collection to add items to.
      * @return  collection     A listing of user data stored through this system.
      */
-    public static function get_metadata(collection $collection) : collection {
+    public static function get_metadata(collection $collection) {
         $collection->add_database_table('auth_basic_master_password', [
             'userid' => 'privacy:metadata:auth_basic_master_password:userid',
         ], 'privacy:metadata:auth_basic_master_password');
@@ -58,7 +58,7 @@ class provider implements
      * @param   int $userid The user to search.
      * @return  contextlist   $contextlist  The contextlist containing the list of contexts used in this plugin.
      */
-    public static function get_contexts_for_userid(int $userid) : contextlist {
+    public static function get_contexts_for_userid(int $userid) {
         $contextlist = new contextlist();
 
         $sql = "SELECT c.id
