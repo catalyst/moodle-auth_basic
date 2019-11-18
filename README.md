@@ -22,6 +22,9 @@ Even in production this has value for use cases such as performance regression t
 
 Unlike the core 'no authentication' plugin, this still requires real users and does proper password checks. It can be set to ignore the auth type against the account, eg manual, ldap, smtp so can be used side by side with other auth plugins, as long as those plugins store or cache the password, ie prevent_local_passwords() returns false for those plugins. So it can only be used with existing accounts and doesn't create accounts.
 
+There is a bonus features which is a 'master password' mode. This is defintely not for production use and you have to jump through some tiny hoops to turn it on so it can't be used accidentally. But when it's set up it enables you to not only log in as anyone with the same password, but also to randomly select who to log in as well. This makes it trivial to run things like simple 1-liner load tests using Apache Bench. See below for details.
+
+
 From a security perspective this auth plugin is exactly as secure as the manual auth plugin, so this should only be used in conjuntion with https.
 
 Branches
@@ -77,45 +80,49 @@ Example usage on the command line:
  Master password feature
  ------------
  
- Set up master password feature for load test (Non Production Environments).
- 
- Add these settings to config.php:
- 
- ```php
-$CFG->auth_basic_enabled_master_password = true;
- ```
- 
- and 
-  ```php
-$CFG->auth_basic_whitelist_ips = 'x.x.x.x';
-  ```
- Where x.x.x.x is the IP address allowed to access Moodle using master password.
- If it is not set, there will be no IP restriction.
- 
- 
- Go to "Site Administration > Plugins > Authentication > Basic Authentication > Master Password" to generate Master Password
- Click on "Regenerate Password" button with you want to choose another password.
- Click on "Save Password" button to create new master password.
+**NOT for production use**
 
+This enables you to:
+
+1) log in as anyone with the same fixed master password
+2) also randomly select who to log in as well
+
+This makes it trivial to run things like simple 1-liner load tests using Apache Bench.
  
- Template to use with curl:
+First add these settings to config.php to protect against accidental use:
+
+```php
+$CFG->auth_basic_enabled_master_password = true;
+```
+
+You can also optionally also lock it down to any ip or subnet:
+
+```php
+$CFG->auth_basic_whitelist_ips = 'x.x.x.x';
+```
+
+Go to "Site Administration > Plugins > Authentication > Basic Authentication > Master Password" to generate Master Password
+Click on "Regenerate Password" button with you want to choose another password.
+Click on "Save Password" button to create new master password.
+
+Template to use with curl:
+
+* random-user: Select a random non-suspended user
+
+```curl --user random-user:masterpassword http://my.moodle.local/course/view.php?id=123```
+
+* random-role-{roleid}: Select a random non-suspended user with roleid at site level
+
+```curl --user random-role-1:masterpassword http://my.moodle.local/course/view.php?id=123```
+
+* random-course-{courseid}: Select a random non-suspended user who is enrolled in the course
+
+```curl --user random-course-10:masterpassword http://my.moodle.local/course/view.php?id=123```
+
+* random-course-{courseid}-role-{roleid}: Select a random non-suspended user who is enrolled in the course with roleid
  
- * random-user: Select a random non-suspended user
- 
- ```curl --user random-user:masterpassword http://my.moodle.local/course/view.php?id=123```
- 
- * random-role-{roleid}: Select a random non-suspended user with roleid at site level
- 
- ```curl --user random-role-1:masterpassword http://my.moodle.local/course/view.php?id=123```
- 
- * random-course-{courseid}: Select a random non-suspended user who is enrolled in the course
- 
- ```curl --user random-course-10:masterpassword http://my.moodle.local/course/view.php?id=123```
- 
- * random-course-{courseid}-role-{roleid}: Select a random non-suspended user who is enrolled in the course with roleid
- 
- ```curl --user random-course-10-role-1:masterpassword http://my.moodle.local/course/view.php?id=123```
- 
+```curl --user random-course-10-role-1:masterpassword http://my.moodle.local/course/view.php?id=123```
+
 
 Feedback and issues
 -------------------
