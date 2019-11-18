@@ -41,7 +41,7 @@ class provider implements
      * @param   collection $collection The initialised collection to add items to.
      * @return  collection     A listing of user data stored through this system.
      */
-    public static function get_metadata(collection $collection): collection {
+    public static function get_metadata(collection $collection) : collection {
         $collection->add_database_table('auth_basic_master_password', [
             'userid' => 'privacy:metadata:auth_basic_master_password:userid',
         ], 'privacy:metadata:auth_basic_master_password');
@@ -55,7 +55,7 @@ class provider implements
      * @param   int $userid The user to search.
      * @return  contextlist   $contextlist  The contextlist containing the list of contexts used in this plugin.
      */
-    public static function get_contexts_for_userid(int $userid): contextlist {
+    public static function get_contexts_for_userid(int $userid) : contextlist {
         $contextlist = new contextlist();
 
         $sql = "SELECT c.id
@@ -122,8 +122,7 @@ class provider implements
      *
      * @param   context $context The specific context to delete data for.
      */
-    public static function delete_data_for_all_users_in_context(\context $context)
-    {
+    public static function delete_data_for_all_users_in_context(\context $context) {
         global $DB;
 
         if ($context->contextlevel !== CONTEXT_USER) {
@@ -139,8 +138,7 @@ class provider implements
      *
      * @param   approved_contextlist $contextlist The approved contexts and user information to delete information for.
      */
-    public static function delete_data_for_user(approved_contextlist $contextlist)
-    {
+    public static function delete_data_for_user(approved_contextlist $contextlist) {
         global $DB;
 
         $contexts = $contextlist->get_contexts();
