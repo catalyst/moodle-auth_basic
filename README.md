@@ -3,6 +3,7 @@
 </a>
 
 * [What is this?](#what-is-this)
+* [Branches](#branches)
 * [Installation](#installation)
 * [Logging out](#logging-out)
 * [Feedback and issues](#feedback-and-issues)
@@ -22,6 +23,15 @@ Even in production this has value for use cases such as performance regression t
 Unlike the core 'no authentication' plugin, this still requires real users and does proper password checks. It can be set to ignore the auth type against the account, eg manual, ldap, smtp so can be used side by side with other auth plugins, as long as those plugins store or cache the password, ie prevent_local_passwords() returns false for those plugins. So it can only be used with existing accounts and doesn't create accounts.
 
 From a security perspective this auth plugin is exactly as secure as the manual auth plugin, so this should only be used in conjuntion with https.
+
+Branches
+--------
+
+| Moodle verion     | Branch      | PHP  |
+| ----------------- | ----------- | ---- |
+| Moodle 3.5 to 3.8 | master      | 7.0+ |
+| Totara 12+        | master      | 7.0+ |
+
 
 Installation
 ------------
