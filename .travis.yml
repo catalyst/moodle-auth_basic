@@ -4,9 +4,8 @@ language: php
 notifications:
   email:
     recipients:
-    - brendan.heywood@gmail.com
 
-sudo: false
+sudo: required
 
 cache:
   directories:
@@ -14,26 +13,26 @@ cache:
 
 php:
   - 5.6
-  - 7.0
-  - 7.1
+  - 7.2
 
 addons:
   postgresql: "9.3"
 
+services:
+  - redis-server
+  - mysql
+
 env:
   - DB=pgsql MOODLE_BRANCH=MOODLE_27_STABLE
-  - DB=pgsql MOODLE_BRANCH=MOODLE_28_STABLE
-  - DB=pgsql MOODLE_BRANCH=MOODLE_29_STABLE
-  - DB=pgsql MOODLE_BRANCH=MOODLE_30_STABLE
   - DB=pgsql MOODLE_BRANCH=MOODLE_31_STABLE
   - DB=pgsql MOODLE_BRANCH=MOODLE_32_STABLE
   - DB=pgsql MOODLE_BRANCH=MOODLE_33_STABLE
   - DB=pgsql MOODLE_BRANCH=MOODLE_34_STABLE
+  - DB=pgsql MOODLE_BRANCH=MOODLE_35_STABLE
+  - DB=pgsql MOODLE_BRANCH=MOODLE_36_STABLE
+  - DB=pgsql MOODLE_BRANCH=MOODLE_37_STABLE
   - DB=pgsql MOODLE_BRANCH=master
   - DB=mysqli MOODLE_BRANCH=MOODLE_27_STABLE
-  - DB=mysqli MOODLE_BRANCH=MOODLE_28_STABLE
-  - DB=mysqli MOODLE_BRANCH=MOODLE_29_STABLE
-  - DB=mysqli MOODLE_BRANCH=MOODLE_30_STABLE
   - DB=mysqli MOODLE_BRANCH=MOODLE_31_STABLE
   - DB=mysqli MOODLE_BRANCH=MOODLE_32_STABLE
   - DB=mysqli MOODLE_BRANCH=MOODLE_33_STABLE
@@ -52,20 +51,6 @@ matrix:
       env: DB=mysqli MOODLE_BRANCH=master
     - php: 7.0
       env: DB=mysqli MOODLE_BRANCH=MOODLE_27_STABLE
-    - php: 7.0
-      env: DB=mysqli MOODLE_BRANCH=MOODLE_28_STABLE
-    - php: 7.0
-      env: DB=mysqli MOODLE_BRANCH=MOODLE_29_STABLE
-    - php: 7.0
-      env: DB=pgsql MOODLE_BRANCH=MOODLE_27_STABLE
-    - php: 7.0
-      env: DB=pgsql MOODLE_BRANCH=MOODLE_28_STABLE
-    - php: 7.0
-      env: DB=pgsql MOODLE_BRANCH=MOODLE_29_STABLE
-    - php: 7.1
-      env: DB=pgsql MOODLE_BRANCH=MOODLE_27_STABLE
-    - php: 7.1
-      env: DB=pgsql MOODLE_BRANCH=MOODLE_28_STABLE
     - php: 7.1
       env: DB=pgsql MOODLE_BRANCH=MOODLE_29_STABLE
     - php: 7.1
@@ -74,10 +59,6 @@ matrix:
       env: DB=pgsql MOODLE_BRANCH=MOODLE_31_STABLE
     - php: 7.1
       env: DB=mysqli MOODLE_BRANCH=MOODLE_27_STABLE
-    - php: 7.1
-      env: DB=mysqli MOODLE_BRANCH=MOODLE_28_STABLE
-    - php: 7.1
-      env: DB=mysqli MOODLE_BRANCH=MOODLE_29_STABLE
     - php: 7.1
       env: DB=mysqli MOODLE_BRANCH=MOODLE_30_STABLE
     - php: 7.1
