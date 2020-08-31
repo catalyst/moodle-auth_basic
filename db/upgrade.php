@@ -52,5 +52,20 @@ function xmldb_auth_basic_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2018121400, 'auth', 'auth_basic');
     }
 
+    if ($oldversion < 2020083100) {
+
+        // Changing the default of field usage on table auth_basic_master_password to 0.
+        $table = new xmldb_table('auth_basic_master_password');
+        $field = new xmldb_field('usage', XMLDB_TYPE_INTEGER, '10', null, null, null, '0', 'password');
+
+        // Launch change of default for field usage.
+        $dbman->change_field_default($table, $field);
+        // Launch change of nullability for field usage.
+        $dbman->change_field_notnull($table, $field);
+
+        // Basic savepoint reached.
+        upgrade_plugin_savepoint(true, 2020083100, 'auth', 'basic');
+    }
+
     return true;
 }
