@@ -38,8 +38,18 @@ matrix:
       env: DB=pgsql  MOODLE_BRANCH=master
     - php: 7.2
       env: DB=mysqli MOODLE_BRANCH=master
+    - php: 7.3
+      env: DB=pgsql  MOODLE_BRANCH=master
+    - php: 7.3
+      env: DB=mysqli MOODLE_BRANCH=master
     - php: 7.4
       env: DB=pgsql  MOODLE_BRANCH=MOODLE_39_STABLE
+    - php: 7.4
+      env: DB=mysqli MOODLE_BRANCH=MOODLE_39_STABLE
+    - php: 7.4
+      env: DB=pgsql  MOODLE_BRANCH=master
+    - php: 7.4
+      env: DB=mysqli MOODLE_BRANCH=master
 
 
 before_install:
@@ -58,7 +68,7 @@ script:
   - moodle-plugin-ci phpmd
   - moodle-plugin-ci codechecker
   # - moodle-plugin-ci csslint    # No CSS
-  - moodle-plugin-ci shifter
+  # - moodle-plugin-ci grunt      # No JS
   # - moodle-plugin-ci jshint     # No JS
   - moodle-plugin-ci phpunit
   # - moodle-plugin-ci behat      # No tests yet
