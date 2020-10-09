@@ -20,6 +20,30 @@ services:
 
 matrix:
   include:
+    - php: 7.0
+      env: DB=mysqli MOODLE_BRANCH=MOODLE_35_STABLE
+    - php: 7.0
+      env: DB=pgsql  MOODLE_BRANCH=MOODLE_35_STABLE
+    - php: 7.1
+      env: DB=mysqli MOODLE_BRANCH=MOODLE_35_STABLE
+    - php: 7.1
+      env: DB=pgsql  MOODLE_BRANCH=MOODLE_35_STABLE
+    - php: 7.1
+      env: DB=mysqli MOODLE_BRANCH=MOODLE_37_STABLE
+    - php: 7.1
+      env: DB=pgsql  MOODLE_BRANCH=MOODLE_37_STABLE
+    - php: 7.1
+      env: DB=mysqli MOODLE_BRANCH=MOODLE_38_STABLE
+    - php: 7.1
+      env: DB=pgsql  MOODLE_BRANCH=MOODLE_38_STABLE
+    - php: 7.1
+      env: DB=mysqli MOODLE_BRANCH=MOODLE_39_STABLE
+    - php: 7.1
+      env: DB=pgsql  MOODLE_BRANCH=MOODLE_39_STABLE
+    - php: 7.1
+      env: DB=mysqli MOODLE_BRANCH=master
+    - php: 7.1
+      env: DB=pgsql  MOODLE_BRANCH=master
     - php: 7.2
       env: DB=mysqli MOODLE_BRANCH=MOODLE_35_STABLE
     - php: 7.2
@@ -31,17 +55,51 @@ matrix:
     - php: 7.2
       env: DB=pgsql  MOODLE_BRANCH=MOODLE_37_STABLE
     - php: 7.2
+      env: DB=mysqli MOODLE_BRANCH=MOODLE_37_STABLE
+    - php: 7.2
       env: DB=pgsql  MOODLE_BRANCH=MOODLE_38_STABLE
     - php: 7.2
       env: DB=mysqli MOODLE_BRANCH=MOODLE_38_STABLE
     - php: 7.2
+      env: DB=pgsql  MOODLE_BRANCH=MOODLE_39_STABLE
+    - php: 7.2
+      env: DB=mysqli MOODLE_BRANCH=MOODLE_39_STABLE
+    - php: 7.2
       env: DB=pgsql  MOODLE_BRANCH=master
     - php: 7.2
       env: DB=mysqli MOODLE_BRANCH=master
     - php: 7.3
+      env: DB=mysqli MOODLE_BRANCH=MOODLE_35_STABLE
+    - php: 7.3
+      env: DB=pgsql  MOODLE_BRANCH=MOODLE_35_STABLE
+    - php: 7.3
+      env: DB=pgsql  MOODLE_BRANCH=MOODLE_37_STABLE
+    - php: 7.3
+      env: DB=mysqli MOODLE_BRANCH=MOODLE_37_STABLE
+    - php: 7.3
+      env: DB=mysqli MOODLE_BRANCH=MOODLE_38_STABLE
+    - php: 7.3
+      env: DB=pgsql  MOODLE_BRANCH=MOODLE_38_STABLE
+    - php: 7.3
+      env: DB=mysqli MOODLE_BRANCH=MOODLE_39_STABLE
+    - php: 7.3
+      env: DB=pgsql  MOODLE_BRANCH=MOODLE_39_STABLE
+    - php: 7.3
       env: DB=pgsql  MOODLE_BRANCH=master
     - php: 7.3
       env: DB=mysqli MOODLE_BRANCH=master
+    - php: 7.4
+      env: DB=mysqli MOODLE_BRANCH=MOODLE_35_STABLE
+    - php: 7.4
+      env: DB=pgsql  MOODLE_BRANCH=MOODLE_35_STABLE
+    - php: 7.4
+      env: DB=pgsql  MOODLE_BRANCH=MOODLE_37_STABLE
+    - php: 7.4
+      env: DB=mysqli MOODLE_BRANCH=MOODLE_37_STABLE
+    - php: 7.4
+      env: DB=mysqli MOODLE_BRANCH=MOODLE_38_STABLE
+    - php: 7.4
+      env: DB=pgsql  MOODLE_BRANCH=MOODLE_38_STABLE
     - php: 7.4
       env: DB=pgsql  MOODLE_BRANCH=MOODLE_39_STABLE
     - php: 7.4
