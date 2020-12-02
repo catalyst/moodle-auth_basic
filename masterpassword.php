@@ -61,7 +61,7 @@ if ($formdata = $mform->get_data()) {
     $record = new stdClass();
     $record->password = $formdata->password;
     $record->userid = $USER->id;
-    $record->usage = 0;
+    $record->uses = 0;
     $record->timecreated = time();
     $record->timeexpired = time() + DAYSECS;
     $DB->insert_record('auth_basic_master_password', $record);
@@ -93,7 +93,7 @@ if (!empty($record) && ($total = $record->count) > 0) {
         $table->head = array(
             get_string('username', 'auth_basic'),
             get_string('password', 'auth_basic'),
-            get_string('usage', 'auth_basic'),
+            get_string('uses', 'auth_basic'),
             get_string('timecreated', 'auth_basic'),
             get_string('timeexpired', 'auth_basic'),
         );
@@ -107,7 +107,7 @@ if (!empty($record) && ($total = $record->count) > 0) {
                 $row[] = "*hidden*";
             }
 
-            $row[] = $record->usage;
+            $row[] = $record->uses;
             $row[] = userdate($record->timecreated, get_string('strftimerecentfull'));
             $row[] = userdate($record->timeexpired, get_string('strftimerecentfull'));
             $table->data[] = $row;
