@@ -67,5 +67,18 @@ function xmldb_auth_basic_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2020083100, 'auth', 'basic');
     }
 
+    if ($oldversion < 2020120300) {
+
+        // Rename field usage on table auth_basic_master_password to uses.
+        $table = new xmldb_table('auth_basic_master_password');
+        $field = new xmldb_field('usage', XMLDB_TYPE_INTEGER, '10', null, null, null, '0', 'password');
+
+        // Launch rename field
+        $dbman->rename_field($table, $field, 'uses');
+
+        // Basic savepoint reached.
+        upgrade_plugin_savepoint(true, 2020120300, 'auth', 'basic');
+    }
+
     return true;
 }

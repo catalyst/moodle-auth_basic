@@ -56,6 +56,6 @@ $string["savepassword"] = "Save Password";
 $string["regeneratepassword"] = "Regenerate Passwords";
 
 $string["username"] = "Name";
-$string["usage"] = "Usage";
+$string["uses"] = "Usage";
 $string["timecreated"] = "Time Created";
 $string["timeexpired"] = "Time Expired";
