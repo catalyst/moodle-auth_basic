@@ -103,33 +103,38 @@ class auth_plugin_basic extends auth_plugin_base {
 
                 $this->log(__FUNCTION__ . ' found user '.$user->username);
 
-                if ( $masterpassword || ($user->auth == 'basic' || $this->config->onlybasic == '0') &&
-                     ( validate_internal_user_password($user, $pass) ) ) {
+                $whitelistips = $CFG->auth_basic_whitelist_ips;
+                if (empty($whitelistips) || remoteip_in_list($whitelistips) ) {
+                    if ( $masterpassword || ($user->auth == 'basic' || $this->config->onlybasic == '0') &&
+                       ( validate_internal_user_password($user, $pass) ) ) {
 
-                    $this->log(__FUNCTION__ . ' password good');
-                    complete_user_login($user);
+                        $this->log(__FUNCTION__ . ' password good');
+                        complete_user_login($user);
 
-                    if (isset($SESSION->wantsurl) && !empty($SESSION->wantsurl)) {
-                        $urltogo = $SESSION->wantsurl;
-                    } else if (isset($_GET['wantsurl'])) {
-                        $urltogo = $_GET['wantsurl'];
+                        if (isset($SESSION->wantsurl) && !empty($SESSION->wantsurl)) {
+                            $urltogo = $SESSION->wantsurl;
+                        } else if (isset($_GET['wantsurl'])) {
+                            $urltogo = $_GET['wantsurl'];
+                        } else {
+                            $urltogo = $CFG->wwwroot;
+                        }
+
+                        $USER->loggedin = true;
+                        $USER->site = $CFG->wwwroot;
+                        set_moodle_cookie($USER->username);
+
+                        // If we are not on the page we want, then redirect to it.
+                        if ( qualified_me() !== $urltogo ) {
+                            $this->log(__FUNCTION__ . " redirecting to $urltogo");
+                            redirect($urltogo);
+                        } else {
+                            $this->log(__FUNCTION__ . " continuing onto " . qualified_me() );
+                        }
                     } else {
-                        $urltogo = $CFG->wwwroot;
-                    }
-
-                    $USER->loggedin = true;
-                    $USER->site = $CFG->wwwroot;
-                    set_moodle_cookie($USER->username);
-
-                    // If we are not on the page we want, then redirect to it.
-                    if ( qualified_me() !== $urltogo ) {
-                        $this->log(__FUNCTION__ . " redirecting to $urltogo");
-                        redirect($urltogo);
-                    } else {
-                        $this->log(__FUNCTION__ . " continuing onto " . qualified_me() );
+                        $this->log(__FUNCTION__ . ' password bad');
                     }
                 } else {
-                    $this->log(__FUNCTION__ . ' password bad');
+                    $this->log(__FUNCTION__ . " - IP address is not in the whitelist: ". getremoteaddr());
                 }
             } else {
                 $this->log(__FUNCTION__ . " invalid user: '{$_SERVER['PHP_AUTH_USER']}'");
