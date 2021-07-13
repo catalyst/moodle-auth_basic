@@ -29,7 +29,7 @@ require_once($CFG->dirroot.'/auth/basic/auth.php');
 class auth_basic_test extends advanced_testcase {
     /** @var auth_plugin_basic Keeps the authentication plugin. */
     protected $authplugin;
-    protected function setUp() {
+    protected function setUp(): void {
         $this->resetAfterTest(true);
         $this->authplugin = new \auth_plugin_basic();
     }
