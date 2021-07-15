@@ -30,10 +30,11 @@ From a security perspective this auth plugin is exactly as secure as the manual 
 Branches
 --------
 
-| Moodle verion     | Branch      | PHP  |
-| ----------------- | ----------- | ---- |
-| Moodle 3.5 to 3.8 | master      | 7.0+ |
-| Totara 12+        | master      | 7.0+ |
+| Moodle verion     | Branch             | PHP  |
+| ----------------- | -------------------| ---- |
+| Moodle 3.5 to 3.9 | master             | 7.0+ |
+| Moodle 3.10+      | MOODLE_310_STABLE  | 7.0+ |
+| Totara 12+        | master             | 7.0+ |
 
 
 Installation
