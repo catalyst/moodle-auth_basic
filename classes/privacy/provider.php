@@ -13,13 +13,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-/**
- * Privacy Subsystem implementation for auth_basic.
- *
- * @package    auth_basic
- * @copyright  2018 Olivier SECRET <olivier.secret@catalyst-au.net>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
 
 namespace auth_basic\privacy;
 
@@ -33,6 +26,13 @@ use core_privacy\local\request\contextlist;
 use core_privacy\local\request\userlist;
 use core_privacy\local\request\writer;
 
+/**
+ * Privacy Subsystem implementation for auth_basic.
+ *
+ * @package    auth_basic
+ * @copyright  2018 Olivier SECRET <olivier.secret@catalyst-au.net>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class provider implements
     \core_privacy\local\metadata\provider,
     \core_privacy\local\request\core_userlist_provider,

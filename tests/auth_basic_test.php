@@ -13,19 +13,19 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-/**
- * Base class for unit tests for auth_basic.
- *
- * @package    auth_basic
- * @category   test
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
 
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 require_once($CFG->dirroot.'/auth/basic/auth.php');
 
+/**
+ * Base class for unit tests for auth_basic.
+ * @package    auth_basic
+ * @category   test
+ * @copyright  Brendan Heywood <brendan@catalyst-au.net>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class auth_basic_test extends advanced_testcase {
     /** @var auth_plugin_basic Keeps the authentication plugin. */
     protected $authplugin;
