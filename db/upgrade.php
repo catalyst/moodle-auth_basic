@@ -24,6 +24,11 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Upgrade hook.
+ *
+ * @param int $oldversion the version we are upgrading from
+ */
 function xmldb_auth_basic_upgrade($oldversion) {
     global $DB;
 

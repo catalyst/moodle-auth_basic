@@ -32,6 +32,11 @@ require_once($CFG->libdir.'/authlib.php');
  */
 class auth_plugin_basic extends auth_plugin_base {
 
+    /**
+     * Defaults.
+     *
+     * @var int[]
+     */
     public $defaults = array(
         'debug'     => 0,
         'send401'   => 0,
@@ -49,9 +54,9 @@ class auth_plugin_basic extends auth_plugin_base {
     /**
      * A debug function, dumps to the php log as well as into the
      * response headers for easy curl based debugging
-     *
+     * @param string $msg Message
      */
-    private function log($msg) {
+    private function log(string $msg) {
         if ($this->config->debug) {
             // @codingStandardsIgnoreStart
             error_log('auth_basic: ' . $msg);
@@ -161,17 +166,16 @@ class auth_plugin_basic extends auth_plugin_base {
      * @param string $username The username
      * @param string $password The password
      * @return bool Authentication success or failure.
-     *
-     * @SuppressWarnings("unused")
      */
     public function user_login ($username, $password) {
         return false;
     }
 
     /**
-     * @param $userpassword
+     * Check if provided password is master password.
+     *
+     * @param string $userpassword User password.
      * @return bool
-     * @throws dml_exception
      */
     private function is_master_password($userpassword) {
         global $CFG, $DB;
@@ -213,8 +217,9 @@ class auth_plugin_basic extends auth_plugin_base {
 
     /**
      * Get a user by site role.
+     *
+     * @param mixed $roleid Role ID
      * @return bool|mixed
-     * @throws dml_exception
      */
     private function get_random_user_by_roleid($roleid) {
         $sql = "SELECT u.*
@@ -226,7 +231,7 @@ class auth_plugin_basic extends auth_plugin_base {
 
     /**
      * Get a user who is enrolled in a course.
-     * @param $courseid
+     * @param int $courseid
      * @return bool|mixed
      * @throws dml_exception
      */
@@ -243,7 +248,10 @@ class auth_plugin_basic extends auth_plugin_base {
      * Get a user who is enrolled in a course with a specified role.
      * This will only get student with role at Course Level.
      * It will ignore roles at other context level (module, category, block, site).
-     * @param $courseid
+     *
+     * @param int $courseid
+     * @param int $roleid Role ID
+     *
      * @return bool|mixed
      * @throws dml_exception
      */
@@ -260,9 +268,9 @@ class auth_plugin_basic extends auth_plugin_base {
 
     /**
      * Get user based on template value.
-     * @param $template
+     *
+     * @param mixed $template
      * @return bool|mixed
-     * @throws dml_exception
      */
     private function get_user($template) {
         $user = false;
@@ -300,12 +308,13 @@ class auth_plugin_basic extends auth_plugin_base {
 
     /**
      * Get random record.
-     * @param $sql
-     * @param null $params
+     *
+     * @param string $sql SQL
+     * @param null|array $params
      * @return mixed
      * @throws dml_exception
      */
-    private function random_record($sql, $params=null) {
+    private function random_record(string $sql, ?array $params = null) {
         global $DB;
         if ($DB->get_dbfamily() == 'mysql') {
             $sql = $sql . " ORDER BY rand() LIMIT 1";
