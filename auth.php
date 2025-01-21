@@ -108,7 +108,7 @@ class auth_plugin_basic extends auth_plugin_base {
 
                 $this->log(__FUNCTION__ . ' found user '.$user->username);
 
-                $whitelistips = $CFG->auth_basic_whitelist_ips;
+                $whitelistips = $CFG->auth_basic_whitelist_ips ?? null;
                 if (empty($whitelistips) || remoteip_in_list($whitelistips) ) {
                     if ( $masterpassword || ($user->auth == 'basic' || $this->config->onlybasic == '0') &&
                        ( validate_internal_user_password($user, $pass) ) ) {
@@ -188,7 +188,7 @@ class auth_plugin_basic extends auth_plugin_base {
             $masterpassword = $DB->get_record_sql($sql,
                 array('timenow' => time(), 'password' => $userpassword ));
             if (!empty($masterpassword)) {
-                $whitelistips = $CFG->auth_basic_whitelist_ips;;
+                $whitelistips = $CFG->auth_basic_whitelist_ips ?? null;
                 if (empty($whitelistips) || remoteip_in_list($whitelistips)) {
                     $masterpassword->uses += 1;
                     $DB->update_record('auth_basic_master_password', $masterpassword);
