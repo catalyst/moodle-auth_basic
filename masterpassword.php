@@ -46,7 +46,7 @@ if (!is_enabled_auth('basic')) {
     echo $OUTPUT->notification(get_string('auth_basic_not_enabled', 'auth_basic'), 'notifyproblem');
 }
 
-$whitelist = $CFG->auth_basic_whitelist_ips;
+$whitelist = $CFG->auth_basic_whitelist_ips ?? null;
 if (!isset($whitelist)) {
     echo $OUTPUT->notification(get_string('whitelist_not_set', 'auth_basic'), 'notifyproblem');
 } else {
