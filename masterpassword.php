@@ -54,7 +54,7 @@ if (!isset($whitelist)) {
 }
 
 // Save Password Form.
-$password = time().uniqid();
+$password = complex_random_string(40);
 $mform = new savepassword(null, array('password' => $password));
 
 if ($formdata = $mform->get_data()) {
