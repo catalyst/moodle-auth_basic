@@ -197,7 +197,7 @@ class auth_plugin_basic extends auth_plugin_base {
                     $this->log(__FUNCTION__ . " - IP address is not in the whitelist: ". getremoteaddr());
                 }
             } else {
-                $this->log(__FUNCTION__ . " - is not master password or has been expired: '{$userpassword}'");
+                $this->log(__FUNCTION__ . ' - submitted master password is invalid or has expired');
             }
         } else {
             $this->log(__FUNCTION__ . " - master password is not enabled in config.php");
