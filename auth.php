@@ -82,6 +82,8 @@ class auth_plugin_basic extends auth_plugin_base {
 
         global $CFG, $DB, $USER, $SESSION;
 
+        $wantsurl = optional_param('wantsurl', '', PARAM_LOCALURL);
+
         $this->log(__FUNCTION__);
 
         if ( isset($_SERVER['PHP_AUTH_USER']) &&
@@ -118,8 +120,8 @@ class auth_plugin_basic extends auth_plugin_base {
 
                         if (isset($SESSION->wantsurl) && !empty($SESSION->wantsurl)) {
                             $urltogo = $SESSION->wantsurl;
-                        } else if (isset($_GET['wantsurl'])) {
-                            $urltogo = $_GET['wantsurl'];
+                        } else if ($wantsurl !== '') {
+                            $urltogo = $wantsurl;
                         } else {
                             $urltogo = $CFG->wwwroot;
                         }
