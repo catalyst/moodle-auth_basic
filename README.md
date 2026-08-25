@@ -82,8 +82,10 @@ Example usage on the command line:
  
  Master password feature
  ------------
- 
-**NOT for production use**
+
+**⚠️ NOT for production use, ever. ⚠️**
+
+This is a low-friction convenience feature meant only for disposable dev/test environments, not for use on production sites.
 
 This enables you to:
 

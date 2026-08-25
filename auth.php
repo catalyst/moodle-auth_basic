@@ -101,25 +101,40 @@ class auth_plugin_basic extends auth_plugin_base {
                     $this->log(__FUNCTION__ . " log in as: '{$user->username}'");
                 }
             } else {
-                $user = $DB->get_record('user', array('username' => $username));
+                $user = $DB->get_record(
+                    'user',
+                    ['username' => $username, 'deleted' => 0, 'mnethostid' => $CFG->mnet_localhost_id]
+                );
             }
 
             if ($user) {
+                // Reject suspended, deleted or unconfirmed accounts.
+                if ($user->suspended || $user->deleted || !$user->confirmed) {
+                    $this->log(__FUNCTION__ . ' account suspended, deleted or unconfirmed');
+                    return;
+                }
 
-                $this->log(__FUNCTION__ . ' found user '.$user->username);
+                $this->log(__FUNCTION__ . ' found user ' . $user->username);
 
                 $whitelistips = $CFG->auth_basic_whitelist_ips ?? null;
-                if (empty($whitelistips) || remoteip_in_list($whitelistips) ) {
+                if (empty($whitelistips) || remoteip_in_list($whitelistips)) {
+                    if (login_is_lockedout($user)) {
+                        $this->log(__FUNCTION__ . ' account locked out: ' . $user->username);
+                        return;
+                    }
+
                     if ( $masterpassword || ($user->auth == 'basic' || $this->config->onlybasic == '0') &&
                        ( validate_internal_user_password($user, $pass) ) ) {
 
                         $this->log(__FUNCTION__ . ' password good');
+                        login_attempt_valid($user);
                         complete_user_login($user);
 
                         if (isset($SESSION->wantsurl) && !empty($SESSION->wantsurl)) {
                             $urltogo = $SESSION->wantsurl;
-                        } else if (isset($_GET['wantsurl'])) {
-                            $urltogo = $_GET['wantsurl'];
+                        } else if ($wantsurl = optional_param('wantsurl', null, PARAM_LOCALURL)) {
+                            // PARAM_LOCALURL only accepts URLs local to this site.
+                            $urltogo = $wantsurl;
                         } else {
                             $urltogo = $CFG->wwwroot;
                         }
@@ -136,6 +151,7 @@ class auth_plugin_basic extends auth_plugin_base {
                             $this->log(__FUNCTION__ . " continuing onto " . qualified_me() );
                         }
                     } else {
+                        login_attempt_failed($user);
                         $this->log(__FUNCTION__ . ' password bad');
                     }
                 } else {
